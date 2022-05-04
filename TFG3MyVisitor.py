@@ -66,7 +66,7 @@ def check_var(var):
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitProg(self, ctx):
         lines.append(".class TrabalhoFinal\n.super java/lang/Object\n")
-        
+
         for declaration in ctx.var_declaration():
             self.visit(declaration)
 
@@ -84,6 +84,9 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             parse_attrib(declaration_type, ctx.attrib.getText())
 
     def visitMain_block(self, ctx):
+        lines.append(
+            f".method public static main([Ljava/lang/String;)V\n.limit stack 10\n.limit locals {len(global_variables)}\n")
+
         for stats in ctx.stats():
             self.visit(stats)
 
@@ -101,6 +104,9 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         result = self.visit(ctx.op)
         update_var(v, result)
 
+        aux = list(global_variables)
+        lines.append(f"istore {aux.index(v)}")  
+
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
         condition = ctx.condition_block()
         evaluated_block = False
@@ -116,7 +122,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
             return evaluated
         else:
-            raise OperationError(f"Operacao '{condition.op.getText()}' invalida para um condicional")
+            raise OperationError(
+                f"Operacao '{condition.op.getText()}' invalida para um condicional")
 
     def visitForCommand(self, ctx: TrabalhoFinalG3Parser.ForCommandContext):
         range_values = self.visit(ctx.rang)
@@ -164,7 +171,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     flag_break.pop()
                     break
         else:
-            raise OperationError(f"Operacao '{ctx.op.getText()}' invalida para um condicional")
+            raise OperationError(
+                f"Operacao '{ctx.op.getText()}' invalida para um condicional")
 
     def visitPrintCommand(self, ctx: TrabalhoFinalG3Parser.PrintCommandContext):
         result1 = self.visit(ctx.op1)
@@ -205,13 +213,23 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         op = ctx.op.text
 
         if((type(l) != str and type(r) != str) and (type(l) != bool and type(r) != bool)):
-            operation = {
+            if(op == '+' and (type(l) == int and type(r) == int)):
+                lines.append(f"ldc {l}\nldc {r}\niadd")
+                return l + r
+            elif(op == '-'):
+                return l - r
+            elif(op == '*'):
+                return l * r
+            elif(op == '/'):
+                return l / r
+
+            """ operation = {
                 '+': lambda: l + r,
                 '-': lambda: l - r,
                 '*': lambda: l * r,
                 '/': lambda: l / r,
             }
-            return operation.get(op, lambda: None)()
+            return operation.get(op, lambda: None)() """
         elif(type(l) == str and type(r) == str and op == '+'):
             return l + r
         else:
