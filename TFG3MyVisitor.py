@@ -8,6 +8,7 @@ from dist.TrabalhoFinalG3Visitor import TrabalhoFinalG3Visitor
 
 global_variables = {}
 flag_break = []
+lines = []
 
 
 def transform_var(declaration, var):
@@ -63,6 +64,17 @@ def check_var(var):
 
 
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
+    def visitProg(self, ctx):
+        lines.append(".class TrabalhoFinal\n.super java/lang/Object\n")
+        
+        for declaration in ctx.var_declaration():
+            self.visit(declaration)
+
+        for func_declaration in ctx.func_declaration():
+            self.visit(ctx.func_declaration())
+
+        self.visit(ctx.main_block())
+
     def visitDeclarations(self, ctx: TrabalhoFinalG3Parser.DeclarationsContext):
         declaration_type = ctx.type_decl.getText()
 
@@ -70,6 +82,15 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             parse_var(declaration_type, ctx.var.getText())
         if(ctx.attrib):
             parse_attrib(declaration_type, ctx.attrib.getText())
+
+    def visitMain_block(self, ctx):
+        for stats in ctx.stats():
+            self.visit(stats)
+
+        lines.append("return\n.end method")
+        with open('TrabalhoFinal.j', 'w+') as writer:
+            writer.writelines(lines)
+            writer.close()
 
     def visitAttribCommand(self, ctx: TrabalhoFinalG3Parser.AttribCommandContext):
         v = ctx.var.text
