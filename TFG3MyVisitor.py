@@ -36,6 +36,9 @@ def parse_attrib(declaration_type, declaration):
             global_variables.update(
                 {key: transform_var(declaration_type, value)})
 
+            aux2 = list(global_variables)
+            lines.append(f"ldc {value}\nistore {aux2.index(key)}\n")
+
 
 def parse_var(declaration_type, declaration):
     first_split = declaration.split(',')
@@ -66,6 +69,8 @@ def check_var(var):
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitProg(self, ctx):
         lines.append(".class TrabalhoFinal\n.super java/lang/Object\n")
+        lines.append(
+            f".method public static main([Ljava/lang/String;)V\n.limit stack 10\n.limit locals 10\n")
 
         for declaration in ctx.var_declaration():
             self.visit(declaration)
@@ -84,28 +89,27 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             parse_attrib(declaration_type, ctx.attrib.getText())
 
     def visitMain_block(self, ctx):
-        lines.append(
-            f".method public static main([Ljava/lang/String;)V\n.limit stack 10\n.limit locals {len(global_variables)}\n")
-
         for stats in ctx.stats():
             self.visit(stats)
 
         lines.append("return\n.end method")
-        with open('TrabalhoFinal.j', 'w+') as writer:
+        with open('jasmin/TrabalhoFinal.j', 'w+') as writer:
             writer.writelines(lines)
             writer.close()
 
     def visitAttribCommand(self, ctx: TrabalhoFinalG3Parser.AttribCommandContext):
         v = ctx.var.text
 
-        if(not global_variables.__contains__(v)):
-            raise DeclarationError(f"Variavel '{v}' nao declarada.")
+        """ if(not global_variables.__contains__(v)):
+            raise DeclarationError(f"Variavel '{v}' nao declarada.") """
 
         result = self.visit(ctx.op)
         update_var(v, result)
 
         aux = list(global_variables)
-        lines.append(f"istore {aux.index(v)}")  
+        lines.append(f"istore {aux.index(v)}\n")
+
+        print(global_variables)
 
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
         condition = ctx.condition_block()
@@ -175,13 +179,49 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 f"Operacao '{ctx.op.getText()}' invalida para um condicional")
 
     def visitPrintCommand(self, ctx: TrabalhoFinalG3Parser.PrintCommandContext):
+        lines.append("getstatic java/lang/System/out Ljava/io/PrintStream;\n")
         result1 = self.visit(ctx.op1)
 
         if(ctx.op2):
             result2 = self.visit(ctx.op2)
             print(result1, result2)
+
+            """ print(type(result1), type(result2))
+            if(type(result1) == str and type(result2) == str):
+                lines.append(f'''ldc "{result1}"
+                invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+                getstatic java/lang/System/out Ljava/io/PrintStream;
+                ldc "{result2}"
+                invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+                ''')
+            elif(type(result1) == str):
+                lines.append(f'ldc "{result1}"\n')
+                lines.append("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n")
+                lines.append("getstatic java/lang/System/out Ljava/io/PrintStream;\n")
+                lines.append(f"iload {list(global_variables.values()).index(result2)}\n")
+                lines.append("invokevirtual java/io/PrintStream/println(I)V\n")
+            elif(type(result2) == str):
+                lines.append(f'''iload {list(global_variables.values()).index(result1)}
+                invokevirtual java/io/PrintStream/println(I)V
+                getstatic java/lang/System/out Ljava/io/PrintStream;
+                ldc "{result2}"
+                invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+                ''')
+            else:
+                lines.append(f'''iload {list(global_variables.values()).index(result1)}
+                invokevirtual java/io/PrintStream/println(I)V
+                getstatic java/lang/System/out Ljava/io/PrintStream;
+                iload {list(global_variables.values()).index(result2)}
+                invokevirtual java/io/PrintStream/println(I)V
+                ''') """
         else:
             print(result1)
+            #if(type(result1) == str):
+            #    lines.append(f'''ldc "{result1}"
+            #    invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n''')
+            #else:
+            #    lines.append(f"""iload {list(global_variables.values()).index(result1)}
+            #    invokevirtual java/io/PrintStream/println(I)V\n""")
 
     def visitInputCommand(self, ctx: TrabalhoFinalG3Parser.InputCommandContext):
         var = ctx.var.text
@@ -213,23 +253,30 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         op = ctx.op.text
 
         if((type(l) != str and type(r) != str) and (type(l) != bool and type(r) != bool)):
-            if(op == '+' and (type(l) == int and type(r) == int)):
-                lines.append(f"ldc {l}\nldc {r}\niadd")
+            if(op == '+'):
+                if((type(l) == int and type(r) == int)):
+                    lines.append(f"ldc {l}\nldc {r}\niadd\n")
+                elif(type(l) == float and type(r) == float):
+                    lines.append(f"ldc {l}\nldc {r}\nfadd\n")
                 return l + r
             elif(op == '-'):
+                if((type(l) == int and type(r) == int)):
+                    lines.append(f"ldc {l}\nldc {r}\nisub\n")
+                elif(type(l) == float and type(r) == float):
+                    lines.append(f"ldc {l}\nldc {r}\nfsub\n")
                 return l - r
             elif(op == '*'):
+                if((type(l) == int and type(r) == int)):
+                    lines.append(f"ldc {l}\nldc {r}\nimul\n")
+                elif(type(l) == float and type(r) == float):
+                    lines.append(f"ldc {l}\nldc {r}\nfmul\n")
                 return l * r
             elif(op == '/'):
+                if((type(l) == int and type(r) == int)):
+                    lines.append(f"ldc {l}\nldc {r}\nidiv\n")
+                elif(type(l) == float and type(r) == float):
+                    lines.append(f"ldc {l}\nldc {r}\nfdiv\n")
                 return l / r
-
-            """ operation = {
-                '+': lambda: l + r,
-                '-': lambda: l - r,
-                '*': lambda: l * r,
-                '/': lambda: l / r,
-            }
-            return operation.get(op, lambda: None)() """
         elif(type(l) == str and type(r) == str and op == '+'):
             return l + r
         else:
@@ -259,6 +306,9 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         return self.visit(ctx.op)
 
     def visitIdExp(self, ctx: TrabalhoFinalG3Parser.IdExpContext):
+        if(not global_variables.__contains__(ctx.atom.text)):
+            raise DeclarationError(f"Variavel '{ctx.atom.text}' nao declarada.")
+
         for key, val in global_variables.items():
             if ctx.atom.text == key:
                 return val
