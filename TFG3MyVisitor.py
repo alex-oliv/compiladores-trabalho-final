@@ -22,30 +22,27 @@ def transform_var(declaration, var):
     return operation.get(declaration, lambda: None)()
 
 
-def parse_attrib(declaration_type, declaration):
-    first_split = declaration.split(',')
-
-    for aux in first_split:
-        key = aux.split('=')[0]
-        value = aux.split('=')[1]
-
-        check_var(key)
-        if('"' in value):
-            global_variables.update({key: value.replace('"', "")})
-        else:
-            global_variables.update(
-                {key: transform_var(declaration_type, value)})
-
-            aux2 = list(global_variables)
-            lines.append(f"ldc {value}\nistore {aux2.index(key)}\n")
-
-
 def parse_var(declaration_type, declaration):
     first_split = declaration.split(',')
 
-    for aux in first_split:
-        check_var(aux)
-        global_variables.update({aux: declaration_type})
+    if(len(first_split[0]) != 1):
+        for aux in first_split:
+            key = aux.split('=')[0]
+            value = aux.split('=')[1]
+
+            check_var(key)
+            if('"' in value):
+                global_variables.update(
+                    {key: [declaration_type, value.replace('"', "")]})
+            else:
+                global_variables.update(
+                    {key: [declaration_type, transform_var(declaration_type, value)]})
+
+                jasmin_var_declaration(key)
+    else:
+        for aux in first_split:
+            check_var(aux)
+            global_variables.update({aux: [declaration_type]})
 
 
 def parse_number(value):
@@ -58,12 +55,28 @@ def parse_number(value):
 
 
 def update_var(var, new_value):
-    global_variables.update({var: new_value})
+    aux = global_variables.get(var)
+
+    if(len(aux) > 1):
+        aux.pop()
+
+    aux.append(new_value)
+    global_variables.update({var: aux})
 
 
 def check_var(var):
     if(global_variables.__contains__(var)):
         raise DeclarationError(f"Variavel '{var}' ja declarada.")
+
+
+def jasmin_var_declaration(key):
+    aux = list(global_variables)
+    value = global_variables.get(key)
+
+    if(type(value[0]) == 'int'):
+        lines.append(f"ldc {value[1]}\nistore {aux.index(key)}\n")
+    else:
+        lines.append(f"ldc {value[1]}\nfstore {aux.index(key)}\n")
 
 
 def jasmin_var_operations(left, right, l, r):
@@ -73,22 +86,45 @@ def jasmin_var_operations(left, right, l, r):
         if(type(l) == int and type(r) == int):
             lines.append(f"iload {aux.index(left.getText())}\n")
             lines.append(f"iload {aux.index(right.getText())}\n")
+        elif(type(l) == int and type(r) == int):
+            lines.append(f"fload {aux.index(left.getText())}\n")
+            lines.append(f"fload {aux.index(right.getText())}\n")
     elif(str(type(left)).find('Id') != -1):
-        lines.append(f"iload {aux.index(left.getText())}\n")
+        if(type(l) == int):
+            lines.append(f"iload {aux.index(left.getText())}\n")
+        elif(type(l) == float):
+            lines.append(f"fload {aux.index(left.getText())}\n")
         lines.append(f"ldc {r}\n")
     elif(str(type(right)).find('Id') != -1):
-        lines.append(f"iload {aux.index(right.getText())}\n")
+        if(type(r) == int):
+            lines.append(f"iload {aux.index(right.getText())}\n")
+        elif(type(r) == float):
+            lines.append(f"fload {aux.index(right.getText())}\n")
         lines.append(f"ldc {l}\n")
     else:
         lines.append(f"ldc {l}\n")
         lines.append(f"ldc {r}\n")
 
 
+def jasmin_print(result):
+    lines.append("getstatic java/lang/System/out Ljava/io/PrintStream;\n")
+
+    if(type(result) == int):
+        lines.append(f'''iload {list(global_variables.values()).index(result)}\n
+        invokevirtual java/io/PrintStream/println(I)V\n''')
+    elif(type(result) == float):
+        lines.append(f'''fload {list(global_variables.values()).index(result)}\n
+        invokevirtual java/io/PrintStream/println(F)V\n''')
+    elif(type(result) == str):
+        lines.append(f'''ldc "{result}"\n
+        invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V''')
+
+
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitProg(self, ctx):
         lines.append(".class TrabalhoFinal\n.super java/lang/Object\n")
         lines.append(
-            f".method public static main([Ljava/lang/String;)V\n.limit stack 10\n.limit locals 10\n")
+            ".method public static main([Ljava/lang/String;)V\n.limit stack 50\n.limit locals 10\n")
 
         for declaration in ctx.var_declaration():
             self.visit(declaration)
@@ -104,9 +140,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         if(ctx.var):
             parse_var(declaration_type, ctx.var.getText())
         if(ctx.attrib):
-            parse_attrib(declaration_type, ctx.attrib.getText())
-        
-        print(global_variables)
+            parse_var(declaration_type, ctx.attrib.getText())
 
     def visitMain_block(self, ctx):
         for stats in ctx.stats():
@@ -123,8 +157,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         result = self.visit(ctx.op)
         update_var(v, result)
 
-        aux = list(global_variables)
-        lines.append(f"istore {aux.index(v)}\n")
+        jasmin_var_declaration(v)
 
         print(global_variables)
 
@@ -196,52 +229,16 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 f"Operacao '{ctx.op.getText()}' invalida para um condicional")
 
     def visitPrintCommand(self, ctx: TrabalhoFinalG3Parser.PrintCommandContext):
-        lines.append("getstatic java/lang/System/out Ljava/io/PrintStream;\n")
         result1 = self.visit(ctx.op1)
 
         if(ctx.op2):
             result2 = self.visit(ctx.op2)
             print(result1, result2)
-
-            print(type(result1), type(result2))
-            if(type(result1) == str and type(result2) == str):
-                lines.append(f'''ldc "{result1}"
-                invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-                getstatic java/lang/System/out Ljava/io/PrintStream;
-                ldc "{result2}"
-                invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-                ''')
-            elif(type(result1) == str):
-                lines.append(f'ldc "{result1}"\n')
-                lines.append(
-                    "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n")
-                lines.append(
-                    "getstatic java/lang/System/out Ljava/io/PrintStream;\n")
-                lines.append(
-                    f"iload {list(global_variables.values()).index(result2)}\n")
-                lines.append("invokevirtual java/io/PrintStream/println(I)V\n")
-            elif(type(result2) == str):
-                lines.append(f'''iload {list(global_variables.values()).index(result1)}
-                invokevirtual java/io/PrintStream/println(I)V
-                getstatic java/lang/System/out Ljava/io/PrintStream;
-                ldc "{result2}"
-                invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-                ''')
-            else:
-                lines.append(f'''iload {list(global_variables.values()).index(result1)}
-                invokevirtual java/io/PrintStream/println(I)V
-                getstatic java/lang/System/out Ljava/io/PrintStream;
-                iload {list(global_variables.values()).index(result2)}
-                invokevirtual java/io/PrintStream/println(I)V
-                ''')
+            jasmin_print(result1)
+            jasmin_print(result2)
         else:
             print(result1)
-            if(type(result1) == str):
-                lines.append(f'''ldc "{result1}"
-                invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n''')
-            else:
-                lines.append(f"""iload {list(global_variables.values()).index(result1)}
-                invokevirtual java/io/PrintStream/println(I)V\n""")
+            jasmin_print(result1)
 
     def visitInputCommand(self, ctx: TrabalhoFinalG3Parser.InputCommandContext):
         var = ctx.var.text
@@ -328,7 +325,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         for key, val in global_variables.items():
             if ctx.atom.text == key:
-                return val
+                return val[1]
 
     def visitNumberExp(self, ctx: TrabalhoFinalG3Parser.NumberExpContext):
         return parse_number(ctx.atom.text)

@@ -1,5 +1,6 @@
-float z;
+float z,a,b,c;
 float x = 105.5, y = 10.5;
+string palavra="hm";
 
 main():
   print "Hello World!";
