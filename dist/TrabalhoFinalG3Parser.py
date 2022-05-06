@@ -1,13 +1,9 @@
-# Generated from TrabalhoFinalG3.g4 by ANTLR 4.9.2
+# Generated from TrabalhoFinalG3.g4 by ANTLR 4.7.2
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
+from typing.io import TextIO
 import sys
-if sys.version_info[1] > 5:
-	from typing import TextIO
-else:
-	from typing.io import TextIO
-
 
 def serializedATN():
     with StringIO() as buf:
@@ -250,15 +246,13 @@ class TrabalhoFinalG3Parser ( Parser ):
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.9.2")
+        self.checkVersion("4.7.2")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
 
 
-
     class ProgContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -344,9 +338,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Var_declarationContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -430,9 +422,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class T_typeContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -481,9 +471,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Id_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -544,9 +532,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Attrib_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -649,24 +635,37 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Func_declarationContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+
+        def getRuleIndex(self):
+            return TrabalhoFinalG3Parser.RULE_func_declaration
+
+     
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
+
+
+
+    class FuncDeclarationContext(Func_declarationContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a TrabalhoFinalG3Parser.Func_declarationContext
+            super().__init__(parser)
+            self.func_type = None # T_typeContext
+            self.func_name = None # Token
+            self.copyFrom(ctx)
+
         def ID(self):
             return self.getToken(TrabalhoFinalG3Parser.ID, 0)
-
         def t_type(self):
             return self.getTypedRuleContext(TrabalhoFinalG3Parser.T_typeContext,0)
 
-
         def parameter_list(self):
             return self.getTypedRuleContext(TrabalhoFinalG3Parser.Parameter_listContext,0)
-
 
         def stats(self, i:int=None):
             if i is None:
@@ -675,23 +674,19 @@ class TrabalhoFinalG3Parser ( Parser ):
                 return self.getTypedRuleContext(TrabalhoFinalG3Parser.StatsContext,i)
 
 
-        def getRuleIndex(self):
-            return TrabalhoFinalG3Parser.RULE_func_declaration
-
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFunc_declaration" ):
-                listener.enterFunc_declaration(self)
+            if hasattr( listener, "enterFuncDeclaration" ):
+                listener.enterFuncDeclaration(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFunc_declaration" ):
-                listener.exitFunc_declaration(self)
+            if hasattr( listener, "exitFuncDeclaration" ):
+                listener.exitFuncDeclaration(self)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFunc_declaration" ):
-                return visitor.visitFunc_declaration(self)
+            if hasattr( visitor, "visitFuncDeclaration" ):
+                return visitor.visitFuncDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
 
 
 
@@ -701,6 +696,7 @@ class TrabalhoFinalG3Parser ( Parser ):
         self.enterRule(localctx, 10, self.RULE_func_declaration)
         self._la = 0 # Token type
         try:
+            localctx = TrabalhoFinalG3Parser.FuncDeclarationContext(self, localctx)
             self.enterOuterAlt(localctx, 1)
             self.state = 90
             self.match(TrabalhoFinalG3Parser.T__7)
@@ -709,7 +705,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             token = self._input.LA(1)
             if token in [TrabalhoFinalG3Parser.T__1, TrabalhoFinalG3Parser.T__2, TrabalhoFinalG3Parser.T__3, TrabalhoFinalG3Parser.T__4]:
                 self.state = 91
-                self.t_type()
+                localctx.func_type = self.t_type()
                 pass
             elif token in [TrabalhoFinalG3Parser.T__8]:
                 self.state = 92
@@ -719,7 +715,7 @@ class TrabalhoFinalG3Parser ( Parser ):
                 raise NoViableAltException(self)
 
             self.state = 95
-            self.match(TrabalhoFinalG3Parser.ID)
+            localctx.func_name = self.match(TrabalhoFinalG3Parser.ID)
             self.state = 96
             self.match(TrabalhoFinalG3Parser.T__9)
             self.state = 98
@@ -756,9 +752,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Parameter_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -830,9 +824,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Main_blockContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -902,9 +894,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StatsContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1037,9 +1027,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class AttributionContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1122,9 +1110,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class If_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1206,9 +1192,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Condition_blockContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1264,9 +1248,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class For_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1365,9 +1347,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Range_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1452,9 +1432,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class While_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1544,9 +1522,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Print_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1627,9 +1603,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Input_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1698,9 +1672,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Funct_callContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1757,9 +1729,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Funct_returnContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1816,9 +1786,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Break_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1876,9 +1844,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Stats_blockContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1939,9 +1905,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ExprContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -2436,9 +2400,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
-
     class Expr_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)

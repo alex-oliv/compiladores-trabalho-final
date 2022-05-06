@@ -3,7 +3,7 @@ grammar TrabalhoFinalG3;
 prog: var_declaration* func_declaration* main_block EOF;
 
 var_declaration:
-	type_decl = t_type (var = id_list | attrib = attrib_list) ';' # Declarations;
+	type_decl = t_type (var = id_list | attrib = attrib_list) ';' #Declarations;
 
 t_type: 'int' | 'float' | 'string' | 'boolean';
 
@@ -15,7 +15,7 @@ attrib_list:
 	)*;
 
 func_declaration:
-	'def' (t_type | 'void') ID '(' (parameter_list)? ')' ':' stats+ '}';
+	'def' (func_type=t_type | 'void') func_name=ID '(' (parameter_list)? ')' ':' stats+ '}' #FuncDeclaration;
 
 parameter_list: t_type ID (',' t_type ID)*;
 

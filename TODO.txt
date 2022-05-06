@@ -1,0 +1,3 @@
+[] - Construir a parte de funções;
+[] - Fazer o reconhecimento de erros de sintaxe do ANTLR;
+[] - Terminar a parte de geração de código;

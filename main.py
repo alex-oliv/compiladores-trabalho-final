@@ -13,34 +13,8 @@ if __name__ == '__main__':
     lexer = TrabalhoFinalG3Lexer(data)
     stream = CommonTokenStream(lexer)
 
-    parser = TrabalhoFinalG3Parser(stream)    
+    parser = TrabalhoFinalG3Parser(stream)
     tree = parser.prog()
 
     visitor = TFG3MyVisitor()
     output = visitor.visit(tree)
-
-
-"""
-data = FileStream('entrada.txt')
-    lexer = TarefaLexer(data)
-
-    lines = []
-    lines.append("Token" + " "*17 + "Tipo" + "\n" + "-"*26 + "\n")
-
-    for token in lexer.getAllTokens():
-        rule = lexer.ruleNames[token.type-1]
-
-        if "T__" in rule:
-            rule = 'Simbolo'
-
-        if rule == 'NUM':
-            rule = 'Numero'
-
-        linhaArquivo = token.text.ljust(12) + "||" + rule.rjust(12) + "\n"
-        if(rule != 'NEWLINE'):
-            lines.append(linhaArquivo)
-
-    with open('saida.txt', 'w+') as writer:
-        writer.writelines(lines)
-        writer.close()
-"""

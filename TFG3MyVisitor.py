@@ -7,8 +7,10 @@ from dist.TrabalhoFinalG3Parser import TrabalhoFinalG3Parser
 from dist.TrabalhoFinalG3Visitor import TrabalhoFinalG3Visitor
 
 global_variables = {}
+global_funct = {}
 flag_break = []
 lines = []
+label = 0
 
 
 def transform_var(declaration, var):
@@ -126,6 +128,53 @@ def jasmin_print(result):
             "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n")
 
 
+def jasmin_logic_operations(op, l, r):
+    global label
+    label += 1
+
+    if(op == '>'):
+        if(type(l) == int and type(r) == int):
+            lines.append(f"if_icmpgt L{label}\n")
+        elif(type(l) == float and type(r) == float):
+            lines.append(f"fcmpl\nifgt L{label}\n")
+    elif(op == '>='):
+        if(type(l) == int and type(r) == int):
+            lines.append(f"if_icmpge L{label}\n")
+        elif(type(l) == float and type(r) == float):
+            lines.append(f"fcmpl\nifge L{label}\n")
+    elif(op == '<'):
+        if(type(l) == int and type(r) == int):
+            lines.append(f"if_icmplt L{label}\n")
+        elif(type(l) == float and type(r) == float):
+            lines.append(f"fcmpl\niflt L{label}\n")
+    elif(op == '<='):
+        if(type(l) == int and type(r) == int):
+            lines.append(f"if_icmple L{label}\n")
+        elif(type(l) == float and type(r) == float):
+            lines.append(f"fcmpl\nifle L{label}\n")
+    elif(op == '=='):
+        if(type(l) == int and type(r) == int):
+            lines.append(f"if_icmpeq L{label}\n")
+        elif(type(l) == float and type(r) == float):
+            lines.append(f"fcmpl\nifeq L{label}\n")
+    elif(op == '!='):
+        if(type(l) == int and type(r) == int):
+            lines.append(f"if_icmpne L{label}\n")
+        elif(type(l) == float and type(r) == float):
+            lines.append(f"fcmpl\nifne L{label}\n")
+    
+    # elif(op == 'and'):
+    #     if(type(l) == int and type(r) == int):
+    #         lines.append(f"if_icmpgt L{label}\n")
+    #     elif(type(l) == float and type(r) == float):
+    #         lines.append(f"fcmpl\nifgt L{label}\n")
+    # elif(op == 'or'):
+    #     if(type(l) == int and type(r) == int):
+    #         lines.append(f"if_icmpgt L{label}\n")
+    #     elif(type(l) == float and type(r) == float):
+    #         lines.append(f"fcmpl\nifgt L{label}\n")
+
+
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitProg(self, ctx):
         lines.append(".class TrabalhoFinal\n.super java/lang/Object\n")
@@ -136,7 +185,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             self.visit(declaration)
 
         for func_declaration in ctx.func_declaration():
-            self.visit(ctx.func_declaration())
+            self.visit(func_declaration)
 
         self.visit(ctx.main_block())
 
@@ -148,11 +197,17 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         if(ctx.attrib):
             parse_var(declaration_type, ctx.attrib.getText())
 
+    def visitFuncDeclaration(self, ctx: TrabalhoFinalG3Parser.FuncDeclarationContext):
+        print(ctx.func_type.getText())
+        print(ctx.func_name.text)
+        print(ctx.parameter_list().getText())
+        #print(ctx.stats().getText())
+
     def visitMain_block(self, ctx):
         for stats in ctx.stats():
             self.visit(stats)
 
-        lines.append("return\n.end method")
+        lines.append("Fim:\nreturn\n.end method")
         with open('jasmin/TrabalhoFinal.j', 'w+') as writer:
             writer.writelines(lines)
             writer.close()
@@ -175,6 +230,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             evaluated = self.visit(condition.op)
             if(evaluated):
                 evaluated_block = True
+                lines.append(f"L{label}:\n")
                 self.visit(condition.stmt)
 
             if(not evaluated_block and ctx.stmt != None):
@@ -307,6 +363,21 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         r = self.visit(ctx.right)
         op = ctx.op.text
 
+        jasmin_var_operations(ctx.left, ctx.right, l, r)
+        jasmin_logic_operations(op, l, r)
+
+        if(op == 'and'):
+            if(type(l) == bool and type(r) == bool):
+                return l and r
+            else:
+                raise TypeError(f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
+                    
+        elif(op == 'or'):
+            if(type(l) == bool and type(r) == bool):
+                return l or r
+            else:
+                raise TypeError(f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
+
         operation = {
             '>': lambda: l > r,
             '>=': lambda: l >= r,
@@ -314,8 +385,6 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             '<=': lambda: l <= r,
             '==': lambda: l == r,
             '!=': lambda: l != r,
-            'and': lambda: l and r,
-            'or': lambda: l or r,
         }
         result = operation.get(op, lambda: None)()
 
