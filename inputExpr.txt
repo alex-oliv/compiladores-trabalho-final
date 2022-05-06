@@ -1,7 +1,12 @@
-float z,a,b,c;
+float z;
 float x = 105.5, y = 10.5;
-string palavra="hm";
+string palavra="Arroz";
 
 main():
   print "Hello World!";
+  z = x + y;
+  print "Valor z =", z;
+  z = 100.5 * 110.5;
+  print "Valor z =", z;
+  print "Valor palavra =", palavra;
 }

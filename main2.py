@@ -28,7 +28,6 @@ else:
     print("HM-2")
 
 
-
 """ def jasmin_var_operations(left, right, l, r):
     aux = list(global_variables)
 
@@ -45,10 +44,3 @@ else:
     else:
         lines.append(f"ldc {l}\n")
         lines.append(f"ldc {r}\n") """
-
-
-        
-""" 
-
-
-

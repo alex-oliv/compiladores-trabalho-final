@@ -32,17 +32,16 @@ def parse_var(declaration_type, declaration):
 
             check_var(key)
             if('"' in value):
-                global_variables.update(
-                    {key: [declaration_type, value.replace('"', "")]})
+                global_variables.update({key: value.replace('"', "")})
             else:
                 global_variables.update(
-                    {key: [declaration_type, transform_var(declaration_type, value)]})
+                    {key: transform_var(declaration_type, value)})
 
                 jasmin_var_declaration(key)
     else:
         for aux in first_split:
             check_var(aux)
-            global_variables.update({aux: [declaration_type]})
+            global_variables.update({aux: declaration_type})
 
 
 def parse_number(value):
@@ -55,13 +54,7 @@ def parse_number(value):
 
 
 def update_var(var, new_value):
-    aux = global_variables.get(var)
-
-    if(len(aux) > 1):
-        aux.pop()
-
-    aux.append(new_value)
-    global_variables.update({var: aux})
+    global_variables.update({var: new_value})
 
 
 def check_var(var):
@@ -73,10 +66,20 @@ def jasmin_var_declaration(key):
     aux = list(global_variables)
     value = global_variables.get(key)
 
-    if(type(value[0]) == 'int'):
-        lines.append(f"ldc {value[1]}\nistore {aux.index(key)}\n")
-    else:
-        lines.append(f"ldc {value[1]}\nfstore {aux.index(key)}\n")
+    if(type(value) == int):
+        lines.append(f"ldc {value}\nistore {aux.index(key)}\n")
+    elif(type(value) == float):
+        lines.append(f"ldc {value}\nfstore {aux.index(key)}\n")
+
+
+def jasmin_var_attribution(key):
+    aux = list(global_variables)
+    value = global_variables.get(key)
+
+    if(type(value) == int):
+        lines.append(f"istore {aux.index(key)}\n")
+    elif(type(value) == float):
+        lines.append(f"fstore {aux.index(key)}\n")
 
 
 def jasmin_var_operations(left, right, l, r):
@@ -86,7 +89,7 @@ def jasmin_var_operations(left, right, l, r):
         if(type(l) == int and type(r) == int):
             lines.append(f"iload {aux.index(left.getText())}\n")
             lines.append(f"iload {aux.index(right.getText())}\n")
-        elif(type(l) == int and type(r) == int):
+        elif(type(l) == float and type(r) == float):
             lines.append(f"fload {aux.index(left.getText())}\n")
             lines.append(f"fload {aux.index(right.getText())}\n")
     elif(str(type(left)).find('Id') != -1):
@@ -110,14 +113,17 @@ def jasmin_print(result):
     lines.append("getstatic java/lang/System/out Ljava/io/PrintStream;\n")
 
     if(type(result) == int):
-        lines.append(f'''iload {list(global_variables.values()).index(result)}\n
-        invokevirtual java/io/PrintStream/println(I)V\n''')
+        lines.append(
+            f"iload {list(global_variables.values()).index(result)}\n")
+        lines.append("invokevirtual java/io/PrintStream/println(I)V\n")
     elif(type(result) == float):
-        lines.append(f'''fload {list(global_variables.values()).index(result)}\n
-        invokevirtual java/io/PrintStream/println(F)V\n''')
+        lines.append(
+            f"fload {list(global_variables.values()).index(result)}\n")
+        lines.append("invokevirtual java/io/PrintStream/println(F)V\n")
     elif(type(result) == str):
-        lines.append(f'''ldc "{result}"\n
-        invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V''')
+        lines.append(f'ldc "{result}"\n')
+        lines.append(
+            "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n")
 
 
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
@@ -157,7 +163,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         result = self.visit(ctx.op)
         update_var(v, result)
 
-        jasmin_var_declaration(v)
+        jasmin_var_attribution(v)
 
         print(global_variables)
 
@@ -325,7 +331,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         for key, val in global_variables.items():
             if ctx.atom.text == key:
-                return val[1]
+                return val
 
     def visitNumberExp(self, ctx: TrabalhoFinalG3Parser.NumberExpContext):
         return parse_number(ctx.atom.text)
