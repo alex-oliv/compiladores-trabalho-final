@@ -1,11 +1,23 @@
-int x;
-float y = 10.5;
-string word="antlr";
+int result;
+int x = 2, y = 3, z = 5;
 
-def int fatorial(int fat, float z):
-  print "Fatorial";
+def int soma(int s1, int s2, int s3):
+  print "Valor s1 =", s1;
+  print "Valor s2 =", s2;
+  print "Valor s3 =", s3;
+  
+  s1 = s1 + s2 + s3;
+
+  return s1;
+}
+
+def void imprime():
+  print "FUNCAO PARA TESTAR VOID E SEM PARAMETROS";
 }
 
 main():
   print "Hello World!";
+  result = soma(x, y, z);
+  print "Valor result =", result;
+  imprime();
 }

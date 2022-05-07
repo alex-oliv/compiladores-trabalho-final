@@ -8,7 +8,7 @@ from dist.TrabalhoFinalG3Visitor import TrabalhoFinalG3Visitor
 
 global_variables = {}
 global_funct = {}
-flag_break = []
+flags = {'break': 0}
 lines = []
 label = 0
 
@@ -18,7 +18,8 @@ def transform_var(declaration, var):
         'int': lambda: int(var),
         'float': lambda: float(var),
         'string': lambda: str(var),
-        'boolean': lambda: bool(var) if var == 'True' else False
+        'boolean': lambda: bool(var) if var == 'True' else False,
+        'void': lambda: 'void'
     }
 
     return operation.get(declaration, lambda: None)()
@@ -27,23 +28,26 @@ def transform_var(declaration, var):
 def parse_var(declaration_type, declaration):
     first_split = declaration.split(',')
 
-    if(len(first_split[0]) != 1):
+    if(first_split[0].find('=') != -1):
         for aux in first_split:
             key = aux.split('=')[0]
             value = aux.split('=')[1]
 
             check_var(key)
             if('"' in value):
-                global_variables.update({key: value.replace('"', "")})
+                global_variables.update(
+                    {key: [declaration_type, value.replace('"', "")]})
             else:
                 global_variables.update(
-                    {key: transform_var(declaration_type, value)})
+                    {key: [declaration_type, transform_var(declaration_type, value)]})
 
                 jasmin_var_declaration(key)
     else:
         for aux in first_split:
             check_var(aux)
-            global_variables.update({aux: declaration_type})
+            global_variables.update({aux: [declaration_type]})
+
+    #print(global_variables)
 
 
 def parse_number(value):
@@ -55,13 +59,33 @@ def parse_number(value):
     return number
 
 
+def parse_func_name(name):
+    i = name.find('(')
+    return name[:i]
+
+
 def update_var(var, new_value):
-    global_variables.update({var: new_value})
+    if(not global_variables.__contains__(var)):
+        raise DeclarationError(f"ID '{var}' nao declarado.")
+
+    aux = global_variables.get(var)
+    new_value_type = str(type(new_value)).split()[
+        1].replace('>', '').replace("'", '')
+
+    if(aux[0] != new_value_type):
+        raise TypeError(
+            f"Erro - ID '{var}' do tipo '{aux[0]}' nao pode receber {str(type(new_value)).split()[1].replace('>', '')}")
+
+    if(len(aux) > 1):
+        aux.pop()
+
+    aux.append(new_value)
+    global_variables.update({var: aux})
 
 
 def check_var(var):
     if(global_variables.__contains__(var)):
-        raise DeclarationError(f"Variavel '{var}' ja declarada.")
+        raise DeclarationError(f"ID '{var}' ja declarado.")
 
 
 def jasmin_var_declaration(key):
@@ -162,7 +186,7 @@ def jasmin_logic_operations(op, l, r):
             lines.append(f"if_icmpne L{label}\n")
         elif(type(l) == float and type(r) == float):
             lines.append(f"fcmpl\nifne L{label}\n")
-    
+
     # elif(op == 'and'):
     #     if(type(l) == int and type(r) == int):
     #         lines.append(f"if_icmpgt L{label}\n")
@@ -185,7 +209,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             self.visit(declaration)
 
         for func_declaration in ctx.func_declaration():
-            self.visit(func_declaration)
+            global_funct[func_declaration.func_name.text] = self.visit(
+                func_declaration)
 
         self.visit(ctx.main_block())
 
@@ -198,10 +223,14 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             parse_var(declaration_type, ctx.attrib.getText())
 
     def visitFuncDeclaration(self, ctx: TrabalhoFinalG3Parser.FuncDeclarationContext):
-        print(ctx.func_type.getText())
-        print(ctx.func_name.text)
-        print(ctx.parameter_list().getText())
-        #print(ctx.stats().getText())
+        flags[ctx.func_name.text] = []
+        parse_var(ctx.func_type.getText(), ctx.func_name.text)
+
+        for parameter in ctx.parameter_list():
+            parse_var(parameter.t_type().getText(), parameter.ID().getText())
+            flags[ctx.func_name.text].append(parameter.ID().getText())
+
+        return ctx.stats()
 
     def visitMain_block(self, ctx):
         for stats in ctx.stats():
@@ -215,12 +244,16 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitAttribCommand(self, ctx: TrabalhoFinalG3Parser.AttribCommandContext):
         v = ctx.var.text
 
+        if(str(type(ctx.op)).find('Func') != -1):
+            func_name = parse_func_name(ctx.op.getText())
+            if(global_variables[func_name][0] == 'void'):
+                raise TypeError("Erro - Funcao declarada do tipo sem retorno.")
+
         result = self.visit(ctx.op)
         update_var(v, result)
-
         jasmin_var_attribution(v)
 
-        print(global_variables)
+        #print(global_variables)
 
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
         condition = ctx.condition_block()
@@ -249,8 +282,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             update_var(var, i)
             self.visit(ctx.stmt)
 
-            if(len(flag_break) == 1):
-                flag_break.pop()
+            if(flags['break'] == 1):
+                flags['break'] = 0
                 break
 
     def visitRangeCommand(self, ctx: TrabalhoFinalG3Parser.RangeCommandContext):
@@ -283,8 +316,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 self.visit(ctx.stmt)
                 op = self.visit(ctx.op)
 
-                if(len(flag_break) == 1):
-                    flag_break.pop()
+                if(flags['break'] == 1):
+                    flags['break'] = 0
                     break
         else:
             raise OperationError(
@@ -296,11 +329,11 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         if(ctx.op2):
             result2 = self.visit(ctx.op2)
             print(result1, result2)
-            jasmin_print(result1)
-            jasmin_print(result2)
+            # jasmin_print(result1)
+            # jasmin_print(result2)
         else:
             print(result1)
-            jasmin_print(result1)
+            # jasmin_print(result1)
 
     def visitInputCommand(self, ctx: TrabalhoFinalG3Parser.InputCommandContext):
         var = ctx.var.text
@@ -311,8 +344,14 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         update_var(var, result)
 
+    def visitFunct_return(self, ctx: TrabalhoFinalG3Parser.Funct_returnContext):
+        return self.visit(ctx.op)
+
+    def visitExpr_list(self, ctx: TrabalhoFinalG3Parser.Expr_listContext):
+        return self.visit(ctx.op)
+
     def visitBreakCommand(self, ctx: TrabalhoFinalG3Parser.BreakCommandContext):
-        flag_break.append(1)
+        flags['break'] = 1
 
     def visitNotExp(self, ctx: TrabalhoFinalG3Parser.NotExpContext):
         op = self.visit(ctx.op)
@@ -370,13 +409,15 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
             if(type(l) == bool and type(r) == bool):
                 return l and r
             else:
-                raise TypeError(f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
-                    
+                raise TypeError(
+                    f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
+
         elif(op == 'or'):
             if(type(l) == bool and type(r) == bool):
                 return l or r
             else:
-                raise TypeError(f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
+                raise TypeError(
+                    f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
 
         operation = {
             '>': lambda: l > r,
@@ -390,17 +431,36 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         return result
 
+    def visitFuncExp(self, ctx: TrabalhoFinalG3Parser.FuncExpContext):
+        func_name = ctx.ID().getText()
+
+        if(not global_variables.__contains__(func_name)):
+            raise DeclarationError(f"ID '{func_name}' nao declarado.")
+
+        parameters = flags[func_name]
+        count = 0
+
+        if(ctx.expr_list()):
+            for expr in ctx.expr_list().expr():
+                update_var(parameters[count], self.visit(expr))
+                count += 1
+
+        for expr in global_funct[func_name]:
+            if(expr.funct_return() and global_variables[func_name][0] != 'void'):
+                return self.visit(expr.funct_return())
+            self.visit(expr)
+
     def visitParenExp(self, ctx: TrabalhoFinalG3Parser.ParenExpContext):
         return self.visit(ctx.op)
 
     def visitIdExp(self, ctx: TrabalhoFinalG3Parser.IdExpContext):
         if(not global_variables.__contains__(ctx.atom.text)):
             raise DeclarationError(
-                f"Variavel '{ctx.atom.text}' nao declarada.")
+                f"ID '{ctx.atom.text}' nao declarado.")
 
         for key, val in global_variables.items():
             if ctx.atom.text == key:
-                return val
+                return val[1]
 
     def visitNumberExp(self, ctx: TrabalhoFinalG3Parser.NumberExpContext):
         return parse_number(ctx.atom.text)

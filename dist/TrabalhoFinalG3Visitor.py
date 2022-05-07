@@ -1,4 +1,4 @@
-# Generated from TrabalhoFinalG3.g4 by ANTLR 4.7.2
+# Generated from TrabalhoFinalG3.g4 by ANTLR 4.9.2
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .TrabalhoFinalG3Parser import TrabalhoFinalG3Parser
@@ -91,11 +91,6 @@ class TrabalhoFinalG3Visitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by TrabalhoFinalG3Parser#InputCommand.
     def visitInputCommand(self, ctx:TrabalhoFinalG3Parser.InputCommandContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by TrabalhoFinalG3Parser#funct_call.
-    def visitFunct_call(self, ctx:TrabalhoFinalG3Parser.Funct_callContext):
         return self.visitChildren(ctx)
 
 

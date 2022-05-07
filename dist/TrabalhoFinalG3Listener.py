@@ -1,4 +1,4 @@
-# Generated from TrabalhoFinalG3.g4 by ANTLR 4.7.2
+# Generated from TrabalhoFinalG3.g4 by ANTLR 4.9.2
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .TrabalhoFinalG3Parser import TrabalhoFinalG3Parser
@@ -161,15 +161,6 @@ class TrabalhoFinalG3Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by TrabalhoFinalG3Parser#funct_call.
-    def enterFunct_call(self, ctx:TrabalhoFinalG3Parser.Funct_callContext):
-        pass
-
-    # Exit a parse tree produced by TrabalhoFinalG3Parser#funct_call.
-    def exitFunct_call(self, ctx:TrabalhoFinalG3Parser.Funct_callContext):
-        pass
-
-
     # Enter a parse tree produced by TrabalhoFinalG3Parser#funct_return.
     def enterFunct_return(self, ctx:TrabalhoFinalG3Parser.Funct_returnContext):
         pass
@@ -296,3 +287,5 @@ class TrabalhoFinalG3Listener(ParseTreeListener):
         pass
 
 
+
+del TrabalhoFinalG3Parser

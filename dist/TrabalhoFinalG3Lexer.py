@@ -1,8 +1,12 @@
-# Generated from TrabalhoFinalG3.g4 by ANTLR 4.7.2
+# Generated from TrabalhoFinalG3.g4 by ANTLR 4.9.2
 from antlr4 import *
 from io import StringIO
-from typing.io import TextIO
 import sys
+if sys.version_info[1] > 5:
+    from typing import TextIO
+else:
+    from typing.io import TextIO
+
 
 
 def serializedATN():
@@ -17,7 +21,7 @@ def serializedATN():
         buf.write("\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4,\t,\4-\t-\3\2")
         buf.write("\3\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\5\3\5\3")
         buf.write("\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\7")
-        buf.write("\3\7\3\b\3\b\3\t\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\13")
+        buf.write("\3\7\3\7\3\7\3\7\3\b\3\b\3\t\3\t\3\n\3\n\3\n\3\n\3\13")
         buf.write("\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\17\3\17\3\17\3\17\3")
         buf.write("\17\3\20\3\20\3\20\3\21\3\21\3\21\3\21\3\21\3\22\3\22")
         buf.write("\3\22\3\22\3\23\3\23\3\23\3\24\3\24\3\24\3\24\3\24\3\24")
@@ -47,10 +51,10 @@ def serializedATN():
         buf.write("\2I\3\2\2\2\2K\3\2\2\2\2M\3\2\2\2\2O\3\2\2\2\2Q\3\2\2")
         buf.write("\2\2S\3\2\2\2\2U\3\2\2\2\2W\3\2\2\2\2Y\3\2\2\2\3[\3\2")
         buf.write("\2\2\5]\3\2\2\2\7a\3\2\2\2\tg\3\2\2\2\13n\3\2\2\2\rv\3")
-        buf.write("\2\2\2\17x\3\2\2\2\21z\3\2\2\2\23~\3\2\2\2\25\u0083\3")
-        buf.write("\2\2\2\27\u0085\3\2\2\2\31\u0087\3\2\2\2\33\u0089\3\2")
-        buf.write("\2\2\35\u008b\3\2\2\2\37\u0090\3\2\2\2!\u0093\3\2\2\2")
-        buf.write("#\u0098\3\2\2\2%\u009c\3\2\2\2\'\u009f\3\2\2\2)\u00a5")
+        buf.write("\2\2\2\17{\3\2\2\2\21}\3\2\2\2\23\177\3\2\2\2\25\u0083")
+        buf.write("\3\2\2\2\27\u0085\3\2\2\2\31\u0087\3\2\2\2\33\u0089\3")
+        buf.write("\2\2\2\35\u008b\3\2\2\2\37\u0090\3\2\2\2!\u0093\3\2\2")
+        buf.write("\2#\u0098\3\2\2\2%\u009c\3\2\2\2\'\u009f\3\2\2\2)\u00a5")
         buf.write("\3\2\2\2+\u00ab\3\2\2\2-\u00b1\3\2\2\2/\u00b7\3\2\2\2")
         buf.write("\61\u00be\3\2\2\2\63\u00c4\3\2\2\2\65\u00c8\3\2\2\2\67")
         buf.write("\u00ca\3\2\2\29\u00cc\3\2\2\2;\u00ce\3\2\2\2=\u00d0\3")
@@ -62,13 +66,13 @@ def serializedATN():
         buf.write("\2\2ab\7h\2\2bc\7n\2\2cd\7q\2\2de\7c\2\2ef\7v\2\2f\b\3")
         buf.write("\2\2\2gh\7u\2\2hi\7v\2\2ij\7t\2\2jk\7k\2\2kl\7p\2\2lm")
         buf.write("\7i\2\2m\n\3\2\2\2no\7d\2\2op\7q\2\2pq\7q\2\2qr\7n\2\2")
-        buf.write("rs\7g\2\2st\7c\2\2tu\7p\2\2u\f\3\2\2\2vw\7.\2\2w\16\3")
-        buf.write("\2\2\2xy\7?\2\2y\20\3\2\2\2z{\7f\2\2{|\7g\2\2|}\7h\2\2")
-        buf.write("}\22\3\2\2\2~\177\7x\2\2\177\u0080\7q\2\2\u0080\u0081")
-        buf.write("\7k\2\2\u0081\u0082\7f\2\2\u0082\24\3\2\2\2\u0083\u0084")
-        buf.write("\7*\2\2\u0084\26\3\2\2\2\u0085\u0086\7+\2\2\u0086\30\3")
-        buf.write("\2\2\2\u0087\u0088\7<\2\2\u0088\32\3\2\2\2\u0089\u008a")
-        buf.write("\7\177\2\2\u008a\34\3\2\2\2\u008b\u008c\7o\2\2\u008c\u008d")
+        buf.write("rs\7g\2\2st\7c\2\2tu\7p\2\2u\f\3\2\2\2vw\7x\2\2wx\7q\2")
+        buf.write("\2xy\7k\2\2yz\7f\2\2z\16\3\2\2\2{|\7.\2\2|\20\3\2\2\2")
+        buf.write("}~\7?\2\2~\22\3\2\2\2\177\u0080\7f\2\2\u0080\u0081\7g")
+        buf.write("\2\2\u0081\u0082\7h\2\2\u0082\24\3\2\2\2\u0083\u0084\7")
+        buf.write("*\2\2\u0084\26\3\2\2\2\u0085\u0086\7+\2\2\u0086\30\3\2")
+        buf.write("\2\2\u0087\u0088\7<\2\2\u0088\32\3\2\2\2\u0089\u008a\7")
+        buf.write("\177\2\2\u008a\34\3\2\2\2\u008b\u008c\7o\2\2\u008c\u008d")
         buf.write("\7c\2\2\u008d\u008e\7k\2\2\u008e\u008f\7p\2\2\u008f\36")
         buf.write("\3\2\2\2\u0090\u0091\7k\2\2\u0091\u0092\7h\2\2\u0092 ")
         buf.write("\3\2\2\2\u0093\u0094\7g\2\2\u0094\u0095\7n\2\2\u0095\u0096")
@@ -183,9 +187,9 @@ class TrabalhoFinalG3Lexer(Lexer):
     modeNames = [ "DEFAULT_MODE" ]
 
     literalNames = [ "<INVALID>",
-            "';'", "'int'", "'float'", "'string'", "'boolean'", "','", "'='", 
-            "'def'", "'void'", "'('", "')'", "':'", "'}'", "'main'", "'if'", 
-            "'else'", "'for'", "'in'", "'range'", "'while'", "'print'", 
+            "';'", "'int'", "'float'", "'string'", "'boolean'", "'void'", 
+            "','", "'='", "'def'", "'('", "')'", "':'", "'}'", "'main'", 
+            "'if'", "'else'", "'for'", "'in'", "'range'", "'while'", "'print'", 
             "'input'", "'return'", "'break'", "'not'", "'-'", "'*'", "'/'", 
             "'+'", "'>'", "'>='", "'<'", "'<='", "'=='", "'!='", "'and'", 
             "'or'", "'True'", "'False'" ]
@@ -205,7 +209,7 @@ class TrabalhoFinalG3Lexer(Lexer):
 
     def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7.2")
+        self.checkVersion("4.9.2")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None

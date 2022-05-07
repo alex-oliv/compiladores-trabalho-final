@@ -8,3 +8,7 @@ class DeclarationError(Error):
 
 class OperationError(Error):
     pass
+
+
+class MissingStatementError(Error):
+    pass

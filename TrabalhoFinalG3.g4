@@ -5,7 +5,7 @@ prog: var_declaration* func_declaration* main_block EOF;
 var_declaration:
 	type_decl = t_type (var = id_list | attrib = attrib_list) ';' #Declarations;
 
-t_type: 'int' | 'float' | 'string' | 'boolean';
+t_type: 'int' | 'float' | 'string' | 'boolean' | 'void';
 
 id_list: ID (',' ID)*;
 
@@ -15,27 +15,27 @@ attrib_list:
 	)*;
 
 func_declaration:
-	'def' (func_type=t_type | 'void') func_name=ID '(' (parameter_list)? ')' ':' stats+ '}' #FuncDeclaration;
+	'def' func_type=t_type func_name=ID '(' (parameter_list+)? ')' ':' stats+ '}' #FuncDeclaration;
 
-parameter_list: t_type ID (',' t_type ID)*;
+parameter_list: t_type ID (',')?;
 
 main_block: 'main' '(' ')' ':' stats+ '}';
 
 stats:
-	attribution
-	| if_command
-	| for_command
-	| while_command
-	| print_command
-	| input_command
-	| break_command
-	| funct_call
-	| funct_return;
+	attribution ';' 
+	| if_command ';' 
+	| for_command ';' 
+	| while_command ';' 
+	| print_command ';' 
+	| input_command ';' 
+	| break_command ';' 
+	| funct_return ';' 
+	| expr ';' ; 
 
-attribution: var=ID ('=' op=expr)+ ';' #AttribCommand;
+attribution: var=ID ('=' op=expr)+ #AttribCommand;
 
 if_command:
-	'if' condition_block '}' ('else' ':' stmt=stats_block '}')? #IfCommand; 
+	'if' condition_block '}' ('else' ':' stmt=stats_block '}')? #IfCommand;
 
 condition_block: op=expr ':' stmt=stats_block;
 
@@ -46,18 +46,16 @@ range_command: (start=NUMBER ':')? stop=NUMBER (':' step=NUMBER)? #RangeCommand;
 
 while_command: 'while' '(' op=expr ')' ':' stmt=stats_block+ '}' #WhileCommand;
 
-print_command: 'print' op1=expr (',' op2=expr)* ';' #PrintCommand;
+print_command: 'print' op1=expr (',' op2=expr)* #PrintCommand;
 
-input_command: var=ID '=' 'input' '(' ')' ';' #InputCommand;
+input_command: var=ID '=' 'input' '(' ')' #InputCommand;
 
-funct_call: ID '(' expr_list ')' ';';
+funct_return: 'return' op=expr;
 
-funct_return: 'return' expr? ';';
-
-break_command: 'break' ';' #BreakCommand;
+break_command: 'break' #BreakCommand;
 
 stats_block:
-  stats+;	
+  stats+;
 
 expr:
 	'not' op=expr															        	              # NotExp
@@ -67,7 +65,7 @@ expr:
 	| left = expr op = ('>' | '>=' | '<' | '<=' | '==' | '!=') right = expr	# LogicExp
 	| left = expr op = ('and' | 'or') right = expr						        # LogicExp
 	| '(' op=expr ')'														                      # ParenExp
-	| ID '(' expr_list? ')'												                    # FuncExp
+	| ID '(' expr_list? ')' 									                        # FuncExp
 	| atom = ID															                          # IdExp
 	| atom = NUMBER													                         	# NumberExp
 	| atom = STRING														                        # StringExp
