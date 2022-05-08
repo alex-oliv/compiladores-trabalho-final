@@ -22,15 +22,15 @@ parameter_list: t_type ID (',')?;
 main_block: 'main' '(' ')' ':' stats+ '}';
 
 stats:
-	attribution ';' 
-	| if_command ';' 
-	| for_command ';' 
-	| while_command ';' 
-	| print_command ';' 
-	| input_command ';' 
-	| break_command ';' 
-	| funct_return ';' 
-	| expr ';' ; 
+	attribution ';'
+	| if_command 
+	| for_command 
+	| while_command 
+	| print_command ';'
+	| input_command ';'
+	| break_command ';'
+	| funct_return ';'
+	| expr ';' ;
 
 attribution: var=ID ('=' op=expr)+ #AttribCommand;
 
@@ -58,14 +58,14 @@ stats_block:
   stats+;
 
 expr:
-	'not' op=expr															        	              # NotExp
+	ID '(' expr_list? ')' 									                          # FuncExp
+	| 'not' op=expr															        	            # NotExp
 	| '-' op=expr															                        # UnaryExp
 	| left = expr op = ('*' | '/') right = expr							          # InfixExp
 	| left = expr op = ('+' | '-') right = expr							          # InfixExp
 	| left = expr op = ('>' | '>=' | '<' | '<=' | '==' | '!=') right = expr	# LogicExp
 	| left = expr op = ('and' | 'or') right = expr						        # LogicExp
 	| '(' op=expr ')'														                      # ParenExp
-	| ID '(' expr_list? ')' 									                        # FuncExp
 	| atom = ID															                          # IdExp
 	| atom = NUMBER													                         	# NumberExp
 	| atom = STRING														                        # StringExp

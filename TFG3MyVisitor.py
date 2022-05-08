@@ -47,16 +47,25 @@ def parse_var(declaration_type, declaration):
             check_var(aux)
             global_variables.update({aux: [declaration_type]})
 
-    #print(global_variables)
+    # print(global_variables)
 
 
-def parse_number(value):
-    if value.isdigit():
-        number = int(value)
+def parse_id(parse):
+    check = parse.isdigit()
+    if(check):
+        result = int(parse)
     else:
-        number = float(value)
+        try:
+            result = float(parse)
+        except ValueError:
+            if(parse == 'True'):
+                result = True
+            elif(parse == 'False'):
+                result = False
+            else:
+                result = parse
 
-    return number
+    return result
 
 
 def parse_func_name(name):
@@ -253,7 +262,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         update_var(v, result)
         jasmin_var_attribution(v)
 
-        #print(global_variables)
+        # print(global_variables)
 
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
         condition = ctx.condition_block()
@@ -291,7 +300,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         range_values = []
 
         for x in ctx.NUMBER():
-            aux.append(parse_number(x.getText()))
+            aux.append(parse_id(x.getText()))
 
         if(len(aux) == 1):
             range_values.append(0)
@@ -324,28 +333,59 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 f"Operacao '{ctx.op.getText()}' invalida para um condicional")
 
     def visitPrintCommand(self, ctx: TrabalhoFinalG3Parser.PrintCommandContext):
-        result1 = self.visit(ctx.op1)
+        if(str(type(ctx.op1)).find('Func') != -1):
+            func_name1 = parse_func_name(str(ctx.op1.getText()))
+            self.visit(ctx.op1)
+            result1 = global_variables[func_name1][1]
 
-        if(ctx.op2):
-            result2 = self.visit(ctx.op2)
-            print(result1, result2)
-            # jasmin_print(result1)
-            # jasmin_print(result2)
+            if(ctx.op2):
+                if(str(type(ctx.op2)).find('Func') != -1):
+                    func_name2 = parse_func_name(str(ctx.op2.getText()))
+                    self.visit(ctx.op2)
+                    result2 = global_variables[func_name2][1]
+                    print(result1, result2)
+                else:
+                    result2 = self.visit(ctx.op2)
+                    print(result1, result2)
+                    # jasmin_print(result1)
+                    # jasmin_print(result2)
+            else:
+                print(result1)
+                # jasmin_print(result1)
         else:
-            print(result1)
-            # jasmin_print(result1)
+            result1 = self.visit(ctx.op1)
+            if(ctx.op2):
+                if(str(type(ctx.op2)).find('Func') != -1):
+                    func_name = parse_func_name(str(ctx.op2.getText()))
+                    self.visit(ctx.op2)
+                    result2 = global_variables[func_name][1]
+                    print(result1, result2)
+                else:
+                    result2 = self.visit(ctx.op2)
+                    print(result1, result2)
+                    # jasmin_print(result1)
+                    # jasmin_print(result2)
+            else:
+                print(result1)
+                # jasmin_print(result1)
 
     def visitInputCommand(self, ctx: TrabalhoFinalG3Parser.InputCommandContext):
         var = ctx.var.text
         parse = input()
 
         check = parse.isdigit()
-        result = parse_number(parse) if(check) else parse
+        if(check):
+            result = parse_id(parse)
+        else:
+            try:
+                result = float(parse)
+            except ValueError:
+                result = parse
 
         update_var(var, result)
 
     def visitFunct_return(self, ctx: TrabalhoFinalG3Parser.Funct_returnContext):
-        return self.visit(ctx.op)
+        raise FunctionReturnResultException(self.visit(ctx.op))
 
     def visitExpr_list(self, ctx: TrabalhoFinalG3Parser.Expr_listContext):
         return self.visit(ctx.op)
@@ -366,8 +406,20 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         return result
 
     def visitInfixExp(self, ctx: TrabalhoFinalG3Parser.InfixExpContext):
-        l = self.visit(ctx.left)
-        r = self.visit(ctx.right)
+        if(str(type(ctx.left)).find('Func') != -1):
+            func_name = parse_func_name(str(ctx.left.getText()))
+            self.visit(ctx.left)
+            l = global_variables[func_name][1]
+        else:
+            l = self.visit(ctx.left)
+
+        if(str(type(ctx.right)).find('Func') != -1):
+            func_name = parse_func_name(str(ctx.right.getText()))
+            self.visit(ctx.right)
+            r = global_variables[func_name][1]
+        else:
+            r = self.visit(ctx.right)
+        
         op = ctx.op.text
 
         if((type(l) != str and type(r) != str) and (type(l) != bool and type(r) != bool)):
@@ -398,8 +450,19 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 f"Erro - tentando operar {str(type(l)).split()[1].replace('>', '')} com {str(type(r)).split()[1].replace('>', '')}")
 
     def visitLogicExp(self, ctx: TrabalhoFinalG3Parser.LogicExpContext):
-        l = self.visit(ctx.left)
-        r = self.visit(ctx.right)
+        if(str(type(ctx.left)).find('Func') != -1):
+            func_name = parse_func_name(str(ctx.left.getText()))
+            self.visit(ctx.left)
+            l = global_variables[func_name][1]
+        else:
+            l = self.visit(ctx.left)
+
+        if(str(type(ctx.right)).find('Func') != -1):
+            func_name = parse_func_name(str(ctx.right.getText()))
+            self.visit(ctx.right)
+            r = global_variables[func_name][1]
+        else:
+            r = self.visit(ctx.right)
         op = ctx.op.text
 
         jasmin_var_operations(ctx.left, ctx.right, l, r)
@@ -442,14 +505,24 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         if(ctx.expr_list()):
             for expr in ctx.expr_list().expr():
-                update_var(parameters[count], self.visit(expr))
+                e = expr.getText()
+                if(e.find('(') != -1):
+                    self.visit(expr)
+                    update_var(
+                        parameters[count], global_variables[parse_func_name(e)][1])
+                else:
+                    value = self.visit(expr)
+                    update_var(parameters[count], value)
+
                 count += 1
 
         for expr in global_funct[func_name]:
-            if(expr.funct_return() and global_variables[func_name][0] != 'void'):
-                return self.visit(expr.funct_return())
-            self.visit(expr)
-
+            try:
+                self.visit(expr)
+            except FunctionReturnResultException as e:
+                result = parse_id(str(e))
+                update_var(func_name, result)
+        
     def visitParenExp(self, ctx: TrabalhoFinalG3Parser.ParenExpContext):
         return self.visit(ctx.op)
 
@@ -463,7 +536,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 return val[1]
 
     def visitNumberExp(self, ctx: TrabalhoFinalG3Parser.NumberExpContext):
-        return parse_number(ctx.atom.text)
+        return parse_id(ctx.atom.text)
 
     def visitStringExp(self, ctx: TrabalhoFinalG3Parser.StringExpContext):
         return ctx.atom.text.replace('"', "")

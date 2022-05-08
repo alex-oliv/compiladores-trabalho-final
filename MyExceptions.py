@@ -12,3 +12,7 @@ class OperationError(Error):
 
 class MissingStatementError(Error):
     pass
+
+
+class FunctionReturnResultException(Error):
+    pass

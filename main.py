@@ -18,3 +18,4 @@ if __name__ == '__main__':
 
     visitor = TFG3MyVisitor()
     output = visitor.visit(tree)
+    

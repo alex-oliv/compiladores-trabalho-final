@@ -1,0 +1,36 @@
+int x, i;
+int y = 10;
+float w;
+float z = 25.5;
+string word = "ANTLR";
+boolean cunversa = True;
+
+main():
+  print "Digite um numero inteiro:";
+  i = input();
+  x = y + i;
+  print "Valor x =", x;
+  print "------------------";
+  if x >= 50:
+    print "Digite um numero float:";
+    w = input();
+    z = z + w;
+    print "Z + W =", z;
+  } else:
+    for i in range(1:5):
+      print "1-Valor i =", i;
+      if i > 3:
+        break;
+      }
+    }
+    print "------------------";
+    i = 0;
+    while (i >= 0):
+      print "2-Valor i =", i;
+      if i > 3:
+        break;
+      }
+      i = i + 2;
+    }
+  }
+}

@@ -1,5 +1,16 @@
-variables = {"y": ['int', 2], "z": ['float', 3.5]}
-print(variables)
+x = "soma(10,10),1000"
+
+y = x.split(',')
+
+print(y)
 
 
-print(variables['y'][0])
+
+""" for stats in ctx.stmt.stats():
+                print(type(stats))
+                if(stats.break_command):
+                    break
+
+if(expr.funct_return() and global_variables[func_name][0] != 'void'):
+                print(f"F-Tipo de retorno dentro do FUNC: {type(self.visit(expr.funct_return()))}")
+                return self.visit(expr.funct_return()) """
