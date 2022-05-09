@@ -1,16 +1,8 @@
-x = "soma(10,10),1000"
-
-y = x.split(',')
-
-print(y)
-
-
-
-""" for stats in ctx.stmt.stats():
-                print(type(stats))
-                if(stats.break_command):
-                    break
-
-if(expr.funct_return() and global_variables[func_name][0] != 'void'):
-                print(f"F-Tipo de retorno dentro do FUNC: {type(self.visit(expr.funct_return()))}")
-                return self.visit(expr.funct_return()) """
+def jasmin_infix_operations(op, l, r):
+    if(op == '+'):
+        lines.append("iadd\n") if (type(l) == int and type(r) == int) else lines.append("fadd\n")
+    elif(op == '-'):
+        lines.append("isub\n") if (type(l) == int and type(r) == int) else lines.append("fsub\n")
+    elif(op == '*'):
+        lines.append("imul\n") if (type(l) == int and type(r) == int) else lines.append("fmul\n")
+    elif(op)
