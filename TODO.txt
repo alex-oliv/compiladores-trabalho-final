@@ -1,3 +1,27 @@
 [ x ] - Construir a parte de funções;
-[FLOP] - Fazer o reconhecimento de erros de sintaxe do ANTLR;
+[ ~ ] - Fazer o reconhecimento de erros de sintaxe do ANTLR;
 [] - Terminar a parte de geração de código;
+
+
+[] - Var declaration / Type = ({int}, {float}, string, boolean);
+[] - Func declaration;
+[ x ] - Main block; 
+[] - Attribution ({int}, {float}, string, boolean);
+[] - IF;
+[] - FOR;
+[] - WHILE;
+[] - PRINT ({int}, {float}, string, boolean);
+[] - INPUT;
+[] - BREAK;
+[] - FUNC_RETURN;
+[] - Expr:
+  ().FuncExp;
+  ().Not;
+  ().Unary;
+  ().Infix;
+  ().Logic;
+  ().Paren;
+  ().Id;
+  ().Number;
+  ().String;
+  ().Boolean;

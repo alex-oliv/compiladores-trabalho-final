@@ -41,7 +41,7 @@ def parse_var(declaration_type, declaration):
                 global_variables.update(
                     {key: transform_var(declaration_type, value)})
 
-                jasmin_var_declaration(key)
+                jasmin_var(key, 1)
     else:
         for aux in first_split:
             check_var(aux)
@@ -83,24 +83,20 @@ def check_var(var):
         raise DeclarationError(f"ID '{var}' ja declarado.")
 
 
-def jasmin_var_declaration(key):
+def jasmin_var(key, context):
     aux = list(global_variables)
     value = global_variables.get(key)
 
-    if(type(value) == int):
-        lines.append(f"ldc {value}\nistore {aux.index(key)}\n")
-    elif(type(value) == float):
-        lines.append(f"ldc {value}\nfstore {aux.index(key)}\n")
-
-
-def jasmin_var_attribution(key):
-    aux = list(global_variables)
-    value = global_variables.get(key)
-
-    if(type(value) == int):
-        lines.append(f"istore {aux.index(key)}\n")
-    elif(type(value) == float):
-        lines.append(f"fstore {aux.index(key)}\n")
+    if(context == 1):
+        if(type(value) == int):
+            lines.append(f"ldc {value}\nistore {aux.index(key)}\n")
+        elif(type(value) == float):
+            lines.append(f"ldc {value}\nfstore {aux.index(key)}\n")
+    elif(context == 2):
+        if(type(value) == int):
+            lines.append(f"istore {aux.index(key)}\n")
+        elif(type(value) == float):
+            lines.append(f"fstore {aux.index(key)}\n")
 
 
 def jasmin_var_operations(left, right, l, r):
@@ -147,7 +143,20 @@ def jasmin_print(result):
             "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n")
 
 
-def jasmin_infix_operations(op):
+def jasmin_infix_operations(op, l, r):
+    if(op == '+'):
+        lines.append("iadd\n") if (type(l) == int and type(r)
+                                   == int) else lines.append("fadd\n")
+    elif(op == '-'):
+        lines.append("isub\n") if (type(l) == int and type(r)
+                                   == int) else lines.append("fsub\n")
+    elif(op == '*'):
+        lines.append("imul\n") if (type(l) == int and type(r)
+                                   == int) else lines.append("fmul\n")
+    elif(op == '/'):
+        lines.append("idiv\n") if (type(l) == int and type(r)
+                                   == int) else lines.append("fdiv\n")
+
 
 def jasmin_logic_operations(op, l, r):
     global label
@@ -248,7 +257,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         result = self.visit(ctx.op)
         update_var(v, result)
-        jasmin_var_attribution(v)
+        jasmin_var(v, 2)
 
         # print(global_variables)
 
@@ -403,25 +412,18 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         op = ctx.op.text
 
         if((type(l) != str and type(r) != str) and (type(l) != bool and type(r) != bool)):
+            jasmin_var_operations(ctx.left, ctx.right, l, r)
             if(op == '+'):
-                jasmin_var_operations(ctx.left, ctx.right, l, r)
-                lines.append("iadd\n") if (type(l) == int and type(
-                    r) == int) else lines.append("fadd\n")
+                jasmin_infix_operations(op, l, r)
                 return l + r
             elif(op == '-'):
-                jasmin_var_operations(ctx.left, ctx.right, l, r)
-                lines.append("isub\n") if (type(l) == int and type(
-                    r) == int) else lines.append("fsub\n")
+                jasmin_infix_operations(op, l, r)
                 return l - r
             elif(op == '*'):
-                jasmin_var_operations(ctx.left, ctx.right, l, r)
-                lines.append("imul\n") if (type(l) == int and type(
-                    r) == int) else lines.append("fmul\n")
+                jasmin_infix_operations(op, l, r)
                 return l * r
             elif(op == '/'):
-                jasmin_var_operations(ctx.left, ctx.right, l, r)
-                lines.append("idiv\n") if (type(l) == int and type(
-                    r) == int) else lines.append("fdiv\n")
+                jasmin_infix_operations(op, l, r)
                 return l / r
         elif(type(l) == str and type(r) == str and op == '+'):
             return l + r
@@ -447,20 +449,21 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         jasmin_var_operations(ctx.left, ctx.right, l, r)
         jasmin_logic_operations(op, l, r)
+        left_operation_type = str(type(l)).split()[1].replace('>', '')
+        rigth_operation_type = str(type(r)).split()[1].replace('>', '')
 
         if(op == 'and'):
             if(type(l) == bool and type(r) == bool):
                 return l and r
             else:
                 raise TypeError(
-                    f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
-
+                    f"Operacao {left_operation_type} and {rigth_operation_type} invalida.")
         elif(op == 'or'):
             if(type(l) == bool and type(r) == bool):
                 return l or r
             else:
                 raise TypeError(
-                    f"Operacao {str(type(l)).split()[1].replace('>', '')} and {str(type(r)).split()[1].replace('>', '')} invalida")
+                    f"Operacao {left_operation_type} and {rigth_operation_type} invalida.")
 
         operation = {
             '>': lambda: l > r,

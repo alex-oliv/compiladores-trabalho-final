@@ -1,5 +1,7 @@
-int numero = 2;
+float x; 
+float y = 2.5;
 
 main():
-  print "Num =", numero;
+  x = y + 5.0;
+  print "Num =", x;
 }

@@ -11,7 +11,7 @@ id_list: ID (',' ID)*;
 
 attrib_list:
 	ID '=' (ID | NUMBER | STRING | TRUE | FALSE) (
-		',' ID '=' (ID | NUMBER | STRING | TRUE | FALSE)
+		',' ID '=' (ID | NUMBER | STRING | TRUE | FALiSE)
 	)*;
 
 func_declaration:
