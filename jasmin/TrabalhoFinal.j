@@ -3,18 +3,14 @@
 .method public static main([Ljava/lang/String;)V
 .limit stack 50
 .limit locals 10
-ldc 2.5
-fstore 1
-fload 1
-ldc 5.0
-fadd
-fstore 0
+ldc 1
+istore 0
+iload 0
+ldc 0
+if_icmpeq L1
 getstatic java/lang/System/out Ljava/io/PrintStream;
-ldc "Num ="
+ldc "X Positivo"
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-getstatic java/lang/System/out Ljava/io/PrintStream;
-fload 0
-invokevirtual java/io/PrintStream/println(F)V
 Fim:
 return
 .end method

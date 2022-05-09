@@ -1,13 +1,9 @@
-# Generated from TrabalhoFinalG3.g4 by ANTLR 4.9.2
+# Generated from TrabalhoFinalG3.g4 by ANTLR 4.7.2
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
+from typing.io import TextIO
 import sys
-if sys.version_info[1] > 5:
-	from typing import TextIO
-else:
-	from typing.io import TextIO
-
 
 def serializedATN():
     with StringIO() as buf:
@@ -39,40 +35,40 @@ def serializedATN():
         buf.write("\26\3\26\3\26\3\26\7\26\u0109\n\26\f\26\16\26\u010c\13")
         buf.write("\26\3\27\3\27\3\27\7\27\u0111\n\27\f\27\16\27\u0114\13")
         buf.write("\27\3\27\2\3*\30\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36")
-        buf.write(" \"$&(*,\2\t\3\2\4\b\3\2(,\3\2+,\3\2\35\36\4\2\34\34\37")
-        buf.write("\37\3\2 %\3\2&\'\2\u0126\2\61\3\2\2\2\4=\3\2\2\2\6D\3")
-        buf.write("\2\2\2\bF\3\2\2\2\nN\3\2\2\2\fZ\3\2\2\2\16n\3\2\2\2\20")
-        buf.write("s\3\2\2\2\22\u0093\3\2\2\2\24\u0095\3\2\2\2\26\u009c\3")
-        buf.write("\2\2\2\30\u00a6\3\2\2\2\32\u00aa\3\2\2\2\34\u00bb\3\2")
-        buf.write("\2\2\36\u00c2\3\2\2\2 \u00ce\3\2\2\2\"\u00d7\3\2\2\2$")
-        buf.write("\u00dd\3\2\2\2&\u00e0\3\2\2\2(\u00e3\3\2\2\2*\u00fa\3")
-        buf.write("\2\2\2,\u010d\3\2\2\2.\60\5\4\3\2/.\3\2\2\2\60\63\3\2")
-        buf.write("\2\2\61/\3\2\2\2\61\62\3\2\2\2\62\67\3\2\2\2\63\61\3\2")
-        buf.write("\2\2\64\66\5\f\7\2\65\64\3\2\2\2\669\3\2\2\2\67\65\3\2")
-        buf.write("\2\2\678\3\2\2\28:\3\2\2\29\67\3\2\2\2:;\5\20\t\2;<\7")
-        buf.write("\2\2\3<\3\3\2\2\2=@\5\6\4\2>A\5\b\5\2?A\5\n\6\2@>\3\2")
-        buf.write("\2\2@?\3\2\2\2AB\3\2\2\2BC\7\3\2\2C\5\3\2\2\2DE\t\2\2")
-        buf.write("\2E\7\3\2\2\2FK\7(\2\2GH\7\t\2\2HJ\7(\2\2IG\3\2\2\2JM")
-        buf.write("\3\2\2\2KI\3\2\2\2KL\3\2\2\2L\t\3\2\2\2MK\3\2\2\2NO\7")
-        buf.write("(\2\2OP\7\n\2\2PW\t\3\2\2QR\7\t\2\2RS\7(\2\2ST\7\n\2\2")
-        buf.write("TV\t\3\2\2UQ\3\2\2\2VY\3\2\2\2WU\3\2\2\2WX\3\2\2\2X\13")
-        buf.write("\3\2\2\2YW\3\2\2\2Z[\7\13\2\2[\\\5\6\4\2\\]\7(\2\2]c\7")
-        buf.write("\f\2\2^`\5\16\b\2_^\3\2\2\2`a\3\2\2\2a_\3\2\2\2ab\3\2")
-        buf.write("\2\2bd\3\2\2\2c_\3\2\2\2cd\3\2\2\2de\3\2\2\2ef\7\r\2\2")
-        buf.write("fh\7\16\2\2gi\5\22\n\2hg\3\2\2\2ij\3\2\2\2jh\3\2\2\2j")
-        buf.write("k\3\2\2\2kl\3\2\2\2lm\7\17\2\2m\r\3\2\2\2no\5\6\4\2oq")
-        buf.write("\7(\2\2pr\7\t\2\2qp\3\2\2\2qr\3\2\2\2r\17\3\2\2\2st\7")
-        buf.write("\20\2\2tu\7\f\2\2uv\7\r\2\2vx\7\16\2\2wy\5\22\n\2xw\3")
-        buf.write("\2\2\2yz\3\2\2\2zx\3\2\2\2z{\3\2\2\2{|\3\2\2\2|}\7\17")
-        buf.write("\2\2}\21\3\2\2\2~\177\5\24\13\2\177\u0080\7\3\2\2\u0080")
-        buf.write("\u0094\3\2\2\2\u0081\u0094\5\26\f\2\u0082\u0094\5\32\16")
-        buf.write("\2\u0083\u0094\5\36\20\2\u0084\u0085\5 \21\2\u0085\u0086")
-        buf.write("\7\3\2\2\u0086\u0094\3\2\2\2\u0087\u0088\5\"\22\2\u0088")
-        buf.write("\u0089\7\3\2\2\u0089\u0094\3\2\2\2\u008a\u008b\5&\24\2")
-        buf.write("\u008b\u008c\7\3\2\2\u008c\u0094\3\2\2\2\u008d\u008e\5")
-        buf.write("$\23\2\u008e\u008f\7\3\2\2\u008f\u0094\3\2\2\2\u0090\u0091")
-        buf.write("\5*\26\2\u0091\u0092\7\3\2\2\u0092\u0094\3\2\2\2\u0093")
-        buf.write("~\3\2\2\2\u0093\u0081\3\2\2\2\u0093\u0082\3\2\2\2\u0093")
+        buf.write(" \"$&(*,\2\b\3\2\4\b\3\2(,\3\2\35\36\4\2\34\34\37\37\3")
+        buf.write("\2 %\3\2&\'\2\u0126\2\61\3\2\2\2\4=\3\2\2\2\6D\3\2\2\2")
+        buf.write("\bF\3\2\2\2\nN\3\2\2\2\fZ\3\2\2\2\16n\3\2\2\2\20s\3\2")
+        buf.write("\2\2\22\u0093\3\2\2\2\24\u0095\3\2\2\2\26\u009c\3\2\2")
+        buf.write("\2\30\u00a6\3\2\2\2\32\u00aa\3\2\2\2\34\u00bb\3\2\2\2")
+        buf.write("\36\u00c2\3\2\2\2 \u00ce\3\2\2\2\"\u00d7\3\2\2\2$\u00dd")
+        buf.write("\3\2\2\2&\u00e0\3\2\2\2(\u00e3\3\2\2\2*\u00fa\3\2\2\2")
+        buf.write(",\u010d\3\2\2\2.\60\5\4\3\2/.\3\2\2\2\60\63\3\2\2\2\61")
+        buf.write("/\3\2\2\2\61\62\3\2\2\2\62\67\3\2\2\2\63\61\3\2\2\2\64")
+        buf.write("\66\5\f\7\2\65\64\3\2\2\2\669\3\2\2\2\67\65\3\2\2\2\67")
+        buf.write("8\3\2\2\28:\3\2\2\29\67\3\2\2\2:;\5\20\t\2;<\7\2\2\3<")
+        buf.write("\3\3\2\2\2=@\5\6\4\2>A\5\b\5\2?A\5\n\6\2@>\3\2\2\2@?\3")
+        buf.write("\2\2\2AB\3\2\2\2BC\7\3\2\2C\5\3\2\2\2DE\t\2\2\2E\7\3\2")
+        buf.write("\2\2FK\7(\2\2GH\7\t\2\2HJ\7(\2\2IG\3\2\2\2JM\3\2\2\2K")
+        buf.write("I\3\2\2\2KL\3\2\2\2L\t\3\2\2\2MK\3\2\2\2NO\7(\2\2OP\7")
+        buf.write("\n\2\2PW\t\3\2\2QR\7\t\2\2RS\7(\2\2ST\7\n\2\2TV\t\3\2")
+        buf.write("\2UQ\3\2\2\2VY\3\2\2\2WU\3\2\2\2WX\3\2\2\2X\13\3\2\2\2")
+        buf.write("YW\3\2\2\2Z[\7\13\2\2[\\\5\6\4\2\\]\7(\2\2]c\7\f\2\2^")
+        buf.write("`\5\16\b\2_^\3\2\2\2`a\3\2\2\2a_\3\2\2\2ab\3\2\2\2bd\3")
+        buf.write("\2\2\2c_\3\2\2\2cd\3\2\2\2de\3\2\2\2ef\7\r\2\2fh\7\16")
+        buf.write("\2\2gi\5\22\n\2hg\3\2\2\2ij\3\2\2\2jh\3\2\2\2jk\3\2\2")
+        buf.write("\2kl\3\2\2\2lm\7\17\2\2m\r\3\2\2\2no\5\6\4\2oq\7(\2\2")
+        buf.write("pr\7\t\2\2qp\3\2\2\2qr\3\2\2\2r\17\3\2\2\2st\7\20\2\2")
+        buf.write("tu\7\f\2\2uv\7\r\2\2vx\7\16\2\2wy\5\22\n\2xw\3\2\2\2y")
+        buf.write("z\3\2\2\2zx\3\2\2\2z{\3\2\2\2{|\3\2\2\2|}\7\17\2\2}\21")
+        buf.write("\3\2\2\2~\177\5\24\13\2\177\u0080\7\3\2\2\u0080\u0094")
+        buf.write("\3\2\2\2\u0081\u0094\5\26\f\2\u0082\u0094\5\32\16\2\u0083")
+        buf.write("\u0094\5\36\20\2\u0084\u0085\5 \21\2\u0085\u0086\7\3\2")
+        buf.write("\2\u0086\u0094\3\2\2\2\u0087\u0088\5\"\22\2\u0088\u0089")
+        buf.write("\7\3\2\2\u0089\u0094\3\2\2\2\u008a\u008b\5&\24\2\u008b")
+        buf.write("\u008c\7\3\2\2\u008c\u0094\3\2\2\2\u008d\u008e\5$\23\2")
+        buf.write("\u008e\u008f\7\3\2\2\u008f\u0094\3\2\2\2\u0090\u0091\5")
+        buf.write("*\26\2\u0091\u0092\7\3\2\2\u0092\u0094\3\2\2\2\u0093~")
+        buf.write("\3\2\2\2\u0093\u0081\3\2\2\2\u0093\u0082\3\2\2\2\u0093")
         buf.write("\u0083\3\2\2\2\u0093\u0084\3\2\2\2\u0093\u0087\3\2\2\2")
         buf.write("\u0093\u008a\3\2\2\2\u0093\u008d\3\2\2\2\u0093\u0090\3")
         buf.write("\2\2\2\u0094\23\3\2\2\2\u0095\u0098\7(\2\2\u0096\u0097")
@@ -115,14 +111,14 @@ def serializedATN():
         buf.write("\u00fb\5*\26\f\u00f2\u00f3\7\f\2\2\u00f3\u00f4\5*\26\2")
         buf.write("\u00f4\u00f5\7\r\2\2\u00f5\u00fb\3\2\2\2\u00f6\u00fb\7")
         buf.write("(\2\2\u00f7\u00fb\7)\2\2\u00f8\u00fb\7*\2\2\u00f9\u00fb")
-        buf.write("\t\4\2\2\u00fa\u00e7\3\2\2\2\u00fa\u00ee\3\2\2\2\u00fa")
+        buf.write("\7+\2\2\u00fa\u00e7\3\2\2\2\u00fa\u00ee\3\2\2\2\u00fa")
         buf.write("\u00f0\3\2\2\2\u00fa\u00f2\3\2\2\2\u00fa\u00f6\3\2\2\2")
         buf.write("\u00fa\u00f7\3\2\2\2\u00fa\u00f8\3\2\2\2\u00fa\u00f9\3")
         buf.write("\2\2\2\u00fb\u010a\3\2\2\2\u00fc\u00fd\f\13\2\2\u00fd")
-        buf.write("\u00fe\t\5\2\2\u00fe\u0109\5*\26\f\u00ff\u0100\f\n\2\2")
-        buf.write("\u0100\u0101\t\6\2\2\u0101\u0109\5*\26\13\u0102\u0103")
-        buf.write("\f\t\2\2\u0103\u0104\t\7\2\2\u0104\u0109\5*\26\n\u0105")
-        buf.write("\u0106\f\b\2\2\u0106\u0107\t\b\2\2\u0107\u0109\5*\26\t")
+        buf.write("\u00fe\t\4\2\2\u00fe\u0109\5*\26\f\u00ff\u0100\f\n\2\2")
+        buf.write("\u0100\u0101\t\5\2\2\u0101\u0109\5*\26\13\u0102\u0103")
+        buf.write("\f\t\2\2\u0103\u0104\t\6\2\2\u0104\u0109\5*\26\n\u0105")
+        buf.write("\u0106\f\b\2\2\u0106\u0107\t\7\2\2\u0107\u0109\5*\26\t")
         buf.write("\u0108\u00fc\3\2\2\2\u0108\u00ff\3\2\2\2\u0108\u0102\3")
         buf.write("\2\2\2\u0108\u0105\3\2\2\2\u0109\u010c\3\2\2\2\u010a\u0108")
         buf.write("\3\2\2\2\u010a\u010b\3\2\2\2\u010b+\3\2\2\2\u010c\u010a")
@@ -244,15 +240,13 @@ class TrabalhoFinalG3Parser ( Parser ):
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.9.2")
+        self.checkVersion("4.7.2")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
 
 
-
     class ProgContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -338,9 +332,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Var_declarationContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -424,9 +416,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class T_typeContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -475,9 +465,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Id_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -538,9 +526,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Attrib_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -643,9 +629,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Func_declarationContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -750,7 +734,7 @@ class TrabalhoFinalG3Parser ( Parser ):
                 self.state = 104 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE) | (1 << TrabalhoFinalG3Parser.FALSE))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE))) != 0)):
                     break
 
             self.state = 106
@@ -763,9 +747,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Parameter_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -825,9 +807,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Main_blockContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -884,7 +864,7 @@ class TrabalhoFinalG3Parser ( Parser ):
                 self.state = 120 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE) | (1 << TrabalhoFinalG3Parser.FALSE))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE))) != 0)):
                     break
 
             self.state = 122
@@ -897,9 +877,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StatsContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1044,9 +1022,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class AttributionContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1127,9 +1103,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class If_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1211,9 +1185,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Condition_blockContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1269,9 +1241,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class For_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1357,7 +1327,7 @@ class TrabalhoFinalG3Parser ( Parser ):
                 self.state = 179 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE) | (1 << TrabalhoFinalG3Parser.FALSE))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE))) != 0)):
                     break
 
             self.state = 181
@@ -1370,9 +1340,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Range_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1457,9 +1425,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class While_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1536,7 +1502,7 @@ class TrabalhoFinalG3Parser ( Parser ):
                 self.state = 200 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE) | (1 << TrabalhoFinalG3Parser.FALSE))) != 0)):
+                if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__14) | (1 << TrabalhoFinalG3Parser.T__16) | (1 << TrabalhoFinalG3Parser.T__19) | (1 << TrabalhoFinalG3Parser.T__20) | (1 << TrabalhoFinalG3Parser.T__22) | (1 << TrabalhoFinalG3Parser.T__23) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE))) != 0)):
                     break
 
             self.state = 202
@@ -1549,9 +1515,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Print_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1630,9 +1594,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Input_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1699,9 +1661,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Funct_returnContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1750,9 +1710,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Break_commandContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1808,9 +1766,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Stats_blockContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1871,9 +1827,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ExprContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -1999,8 +1953,6 @@ class TrabalhoFinalG3Parser ( Parser ):
 
         def TRUE(self):
             return self.getToken(TrabalhoFinalG3Parser.TRUE, 0)
-        def FALSE(self):
-            return self.getToken(TrabalhoFinalG3Parser.FALSE, 0)
 
         def enterRule(self, listener:ParseTreeListener):
             if hasattr( listener, "enterBooleanExp" ):
@@ -2183,7 +2135,7 @@ class TrabalhoFinalG3Parser ( Parser ):
                 self.state = 233
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE) | (1 << TrabalhoFinalG3Parser.FALSE))) != 0):
+                if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << TrabalhoFinalG3Parser.T__9) | (1 << TrabalhoFinalG3Parser.T__24) | (1 << TrabalhoFinalG3Parser.T__25) | (1 << TrabalhoFinalG3Parser.ID) | (1 << TrabalhoFinalG3Parser.NUMBER) | (1 << TrabalhoFinalG3Parser.STRING) | (1 << TrabalhoFinalG3Parser.TRUE))) != 0):
                     self.state = 232
                     self.expr_list()
 
@@ -2253,13 +2205,7 @@ class TrabalhoFinalG3Parser ( Parser ):
                 self._ctx = localctx
                 _prevctx = localctx
                 self.state = 247
-                localctx.atom = self._input.LT(1)
-                _la = self._input.LA(1)
-                if not(_la==TrabalhoFinalG3Parser.TRUE or _la==TrabalhoFinalG3Parser.FALSE):
-                    localctx.atom = self._errHandler.recoverInline(self)
-                else:
-                    self._errHandler.reportMatch(self)
-                    self.consume()
+                localctx.atom = self.match(TrabalhoFinalG3Parser.TRUE)
                 pass
 
 
@@ -2368,9 +2314,7 @@ class TrabalhoFinalG3Parser ( Parser ):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
-
     class Expr_listContext(ParserRuleContext):
-        __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)

@@ -1,7 +1,9 @@
-float x; 
-float y = 2.5;
+int x = 1;
 
 main():
-  x = y + 5.0;
-  print "Num =", x;
+  if x == 0:
+    print "X = 0";
+  } else:
+    print "X Positivo";
+  }
 }

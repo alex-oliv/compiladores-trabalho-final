@@ -1,4 +1,4 @@
-# Generated from TrabalhoFinalG3.g4 by ANTLR 4.9.2
+# Generated from TrabalhoFinalG3.g4 by ANTLR 4.7.2
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .TrabalhoFinalG3Parser import TrabalhoFinalG3Parser
@@ -287,5 +287,3 @@ class TrabalhoFinalG3Listener(ParseTreeListener):
         pass
 
 
-
-del TrabalhoFinalG3Parser

@@ -37,10 +37,10 @@ def parse_var(declaration_type, declaration):
             if('"' in value):
                 global_variables.update(
                     {key: value.replace('"', "")})
+                jasmin_var(key, 1)
             else:
                 global_variables.update(
                     {key: transform_var(declaration_type, value)})
-
                 jasmin_var(key, 1)
     else:
         for aux in first_split:
@@ -92,11 +92,25 @@ def jasmin_var(key, context):
             lines.append(f"ldc {value}\nistore {aux.index(key)}\n")
         elif(type(value) == float):
             lines.append(f"ldc {value}\nfstore {aux.index(key)}\n")
+        elif(type(value) == str):
+            lines.append(f'ldc "{value}"\nastore {aux.index(key)}\n')
+        elif(type(value) == bool):
+            if(value == True):
+                lines.append(f'ldc 1\nistore {aux.index(key)}\n')
+            else:
+                lines.append(f'ldc 0\nistore {aux.index(key)}\n')
     elif(context == 2):
         if(type(value) == int):
             lines.append(f"istore {aux.index(key)}\n")
         elif(type(value) == float):
             lines.append(f"fstore {aux.index(key)}\n")
+        elif(type(value) == str):
+            lines.append(f"astore {aux.index(key)}\n")
+        elif(type(value) == bool):
+            if(value == True):
+                lines.append(f'ldc 1\nistore {aux.index(key)}\n')
+            else:
+                lines.append(f'ldc 0\nistore {aux.index(key)}\n')
 
 
 def jasmin_var_operations(left, right, l, r):
@@ -138,7 +152,11 @@ def jasmin_print(result):
             f"fload {list(global_variables.values()).index(result)}\n")
         lines.append("invokevirtual java/io/PrintStream/println(F)V\n")
     elif(type(result) == str):
-        lines.append(f'ldc "{result}"\n')
+        try:
+            lines.append(
+                f'aload {list(global_variables.values()).index(result)}\n')
+        except ValueError:
+            lines.append(f'ldc "{result}"\n')
         lines.append(
             "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n")
 
@@ -205,6 +223,21 @@ def jasmin_logic_operations(op, l, r):
     #         lines.append(f"fcmpl\nifgt L{label}\n")
 
 
+def jasmin_unary(result):
+    if(type(result) == int):
+        lines.append(
+            f"iload {list(global_variables.values()).index(result)}\n")
+        lines.append(f"ineg\n")
+        lines.append(
+            f"istore {list(global_variables.values()).index(result)}\n")
+    elif(type(result) == float):
+        lines.append(
+            f"fload {list(global_variables.values()).index(result)}\n")
+        lines.append(f"fneg\n")
+        lines.append(
+            f"fstore {list(global_variables.values()).index(result)}\n")
+
+
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitProg(self, ctx):
         lines.append(".class TrabalhoFinal\n.super java/lang/Object\n")
@@ -258,8 +291,6 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         result = self.visit(ctx.op)
         update_var(v, result)
         jasmin_var(v, 2)
-
-        # print(global_variables)
 
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
         condition = ctx.condition_block()
@@ -391,6 +422,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitUnaryExp(self, ctx: TrabalhoFinalG3Parser.UnaryExpContext):
         op = self.visit(ctx.op)
         result = -op
+
+        jasmin_unary(result)
 
         return result
 
@@ -525,4 +558,5 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         return ctx.atom.text.replace('"', "")
 
     def visitBooleanExp(self, ctx: TrabalhoFinalG3Parser.BooleanExpContext):
+        print(f"BOOL REGISTRADO")
         return True if (ctx.atom.text == 'True') else False

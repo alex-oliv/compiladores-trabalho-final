@@ -11,7 +11,7 @@ id_list: ID (',' ID)*;
 
 attrib_list:
 	ID '=' (ID | NUMBER | STRING | TRUE | FALSE) (
-		',' ID '=' (ID | NUMBER | STRING | TRUE | FALiSE)
+		',' ID '=' (ID | NUMBER | STRING | TRUE | FALSE)
 	)*;
 
 func_declaration:
@@ -69,7 +69,7 @@ expr:
 	| atom = ID															                          # IdExp
 	| atom = NUMBER													                         	# NumberExp
 	| atom = STRING														                        # StringExp
-	| atom = (TRUE | FALSE)												                    # BooleanExp;
+	| atom = TRUE 								                    # BooleanExp;
 
 expr_list: expr (',' expr)*;
 

@@ -3,25 +3,21 @@
 [] - Terminar a parte de geração de código;
 
 
-[] - Var declaration / Type = ({int}, {float}, string, boolean);
+[] - Var declaration / Type = ({int}, {float}, {string}, boolean);
 [] - Func declaration;
 [ x ] - Main block; 
-[] - Attribution ({int}, {float}, string, boolean);
-[] - IF;
+[] - Attribution ({int}, {float}, {string}, boolean);
+[] - IF / ELSE;
 [] - FOR;
 [] - WHILE;
-[] - PRINT ({int}, {float}, string, boolean);
+[] - PRINT ({int}, {float}, {string}, boolean);
 [] - INPUT;
 [] - BREAK;
 [] - FUNC_RETURN;
 [] - Expr:
   ().FuncExp;
   ().Not;
-  ().Unary;
-  ().Infix;
-  ().Logic;
+  (x).Unary;
+  (x).Infix;
+  (x).Logic;
   ().Paren;
-  ().Id;
-  ().Number;
-  ().String;
-  ().Boolean;
