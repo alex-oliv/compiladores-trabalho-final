@@ -223,19 +223,32 @@ def jasmin_logic_operations(op, l, r):
     #         lines.append(f"fcmpl\nifgt L{label}\n")
 
 
-def jasmin_unary(result):
-    if(type(result) == int):
-        lines.append(
-            f"iload {list(global_variables.values()).index(result)}\n")
-        lines.append(f"ineg\n")
-        lines.append(
-            f"istore {list(global_variables.values()).index(result)}\n")
-    elif(type(result) == float):
-        lines.append(
-            f"fload {list(global_variables.values()).index(result)}\n")
-        lines.append(f"fneg\n")
-        lines.append(
-            f"fstore {list(global_variables.values()).index(result)}\n")
+# def jasmin_unary(result):
+    
+#         lines.append(
+#             f"istore {list(global_variables.values()).index(result)}\n")
+    
+#         lines.append(
+#             f"fstore {list(global_variables.values()).index(result)}\n")
+
+def jasmin_expr(op_type, result):
+    if(op_type.find('Unary') != -1):
+        if(type(result) == int):
+            lines.append(
+                f"iload {list(global_variables.values()).index(result)}\n")
+            lines.append(f"ineg\n")    
+        elif(type(result) == float):
+            lines.append(
+                f"fload {list(global_variables.values()).index(result)}\n")
+            lines.append(f"fneg\n")
+    elif(op_type.find('Id') != -1):
+        if(type(result) == int):
+            lines.append(f"iload {list(global_variables.values()).index(result)}\n")
+        elif(type(result) == float):
+            lines.append(
+                f"fload {list(global_variables.values()).index(result)}\n")
+    elif(op_type.find('Number') != -1):
+        lines.append(f"ldc {result}\n")
 
 
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
@@ -290,6 +303,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         result = self.visit(ctx.op)
         update_var(v, result)
+        jasmin_expr(str(type(ctx.op)), result)
         jasmin_var(v, 2)
 
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
@@ -422,8 +436,6 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitUnaryExp(self, ctx: TrabalhoFinalG3Parser.UnaryExpContext):
         op = self.visit(ctx.op)
         result = -op
-
-        jasmin_unary(result)
 
         return result
 
