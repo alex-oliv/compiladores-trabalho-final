@@ -8,7 +8,7 @@ from dist.TrabalhoFinalG3Visitor import TrabalhoFinalG3Visitor
 
 global_variables = {}
 global_funct = {}
-flags = {'break': 0, 'for': 0, 'while': 0, 'read': 0}
+flags = {'break': 0, 'for': 0, 'while': 0, 'read': 0, 'read_print': 0}
 lines = []
 label = 0
 
@@ -336,7 +336,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 self.visit(condition.stmt)
 
             if(flags['read'] == 0):
-                lines.append(f"L{label-1}:\n")
+                #lines.append(f"L{label-1}:\n")
                 self.visit(condition.stmt)
                 if(ctx.stmt != None):
                     lines.append(f"ELSE{label}:\n")
@@ -359,7 +359,6 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         jasmin_for_command(var, range_values)
         aux = label-1
-
         for i in range(range_values[0], range_values[1], range_values[2]):
             update_var(var, i)
             self.visit(ctx.stmt)
@@ -370,7 +369,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     f"iinc {var_list.index(var)} {range_values[2]}\ngoto Lfor{var}\n")
                 lines.append(f"L{aux}:\nreturn\n")
                 flags['for'] = 1
-                #flags['read'] = 1
+                flags['read'] = 1
 
             if(flags['break'] == 1):
                 flags['break'] = 0
@@ -465,13 +464,13 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     print(result1, result2)
                 else:
                     result2 = self.visit(ctx.op2)
-                    if(flags['read'] == 1):
+                    if(flags['read'] == 1 or (flags['for'] == 0 and flags['while'] == 0)):
                         print(result1, result2)
                     if(flags['for'] == 0 and flags['while'] == 0):
                         jasmin_print(result1)
                         jasmin_print(result2)
             else:
-                if(flags['read'] == 1):
+                if(flags['read'] == 1 or (flags['for'] == 0 and flags['while'] == 0)):
                     print(result1)
                 if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_print(result1)
@@ -487,11 +486,16 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     result2 = self.visit(ctx.op2)
                     if(flags['read'] == 1):
                         print(result1, result2)
+                        print(f"1-Read: {flags['read']} || Read-print: {flags['read_print']}")
                     if(flags['for'] == 0 and flags['while'] == 0):
+                        print(f"2-Read: {flags['read']} || Read-print: {flags['read_print']} || For: {flags['for']}")
+                        if(flags['read_print'] == 0 and flags['for'] == 0):
+                            print(result1, result2)
+                            flags['read_print'] = 1
                         jasmin_print(result1)
                         jasmin_print(result2)
             else:
-                if(flags['read'] == 1):
+                if(flags['read_print'] == 0 and flags['read'] == 1):
                     print(result1)
                 if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_print(result1)
@@ -544,18 +548,23 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         if((type(l) != str and type(r) != str) and (type(l) != bool and type(r) != bool)):
             if(flags['for'] == 0 and flags['while'] == 0):
                 jasmin_var_operations(ctx.left, ctx.right, l, r)
-                if(op == '+'):
+            
+            if(op == '+'):
+                if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_infix_operations(op, l, r)
-                    return l + r
-                elif(op == '-'):
+                return l + r
+            elif(op == '-'):
+                if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_infix_operations(op, l, r)
-                    return l - r
-                elif(op == '*'):
+                return l - r
+            elif(op == '*'):
+                if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_infix_operations(op, l, r)
-                    return l * r
-                elif(op == '/'):
+                return l * r
+            elif(op == '/'):
+                if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_infix_operations(op, l, r)
-                    return l / r
+                return l / r
         elif(type(l) == str and type(r) == str and op == '+'):
             return l + r
         else:
