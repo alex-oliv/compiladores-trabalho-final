@@ -1,10 +1,7 @@
-int i = 0;
+int n;
 
 main():
-  for i in range(3):
-    if i == 2:
-      print "Valor i =", i;
-    }
-    print "For i =", i;
-  }
+  print "Digite um numero:";
+  n = input();
+  print "Valor n =", n;
 }

@@ -42,7 +42,7 @@ condition_block: op=expr ':' stmt=stats_block;
 for_command:
 	'for' var=ID 'in' 'range' '(' rang=range_command ')' ':' stmt=stats_block+ '}' #ForCommand;
 
-range_command: (start=NUMBER ':')? stop=NUMBER (':' step=NUMBER)? #RangeCommand;
+range_command: (start=(NUMBER | ID) ':')? stop=(NUMBER | ID) (':' step=(NUMBER | ID))? #RangeCommand;
 
 while_command: 'while' '(' op=expr ')' ':' stmt=stats_block+ '}' #WhileCommand;
 

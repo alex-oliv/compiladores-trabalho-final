@@ -8,7 +8,8 @@ from dist.TrabalhoFinalG3Visitor import TrabalhoFinalG3Visitor
 
 global_variables = {}
 global_funct = {}
-flags = {'break': 0, 'for': 0, 'while': 0, 'read': 0, 'read_print': 0}
+flags = {'break': 0, 'for': 0, 'while': 0,
+         'read': 0, 'read_print': 0, 'enter_while': -1, 'exit_while': 0, 'read_if': 0, 'enter_func': 0, 'exit_func': 0}
 lines = []
 label = 0
 
@@ -18,7 +19,7 @@ def transform_var(declaration, var):
         'int': lambda: int(var),
         'float': lambda: float(var),
         'string': lambda: str(var),
-        'boolean': lambda: bool(var) if var == 'True' else False,
+        'boolean': lambda: True if var == 'True' else False,
         'void': lambda: 'void'
     }
 
@@ -84,32 +85,35 @@ def check_var(var):
 
 
 def jasmin_var_declaration(key):
-    aux = list(global_variables)
+    var_list = list(global_variables)
     value = global_variables.get(key)
 
     if(type(value) == int):
-        lines.append(f"ldc {value}\nistore {aux.index(key)}\n")
+        lines.append(f"ldc {value}\nistore {var_list.index(key)}\n")
     elif(type(value) == float):
-        lines.append(f"ldc {value}\nfstore {aux.index(key)}\n")
+        lines.append(f"ldc {value}\nfstore {var_list.index(key)}\n")
     elif(type(value) == str):
-        lines.append(f'ldc "{value}"\nastore {aux.index(key)}\n')
+        lines.append(f'ldc "{value}"\nastore {var_list.index(key)}\n')
 
 
 def jasmin_print(result):
     lines.append("getstatic java/lang/System/out Ljava/io/PrintStream;\n")
 
     if(type(result) == int):
-        lines.append(
-            f"iload {list(global_variables.values()).index(result)}\n")
+        try:
+            lines.append(f"iload {list(global_variables.values()).index(result)}\n")
+        except ValueError:
+            lines.append(f'ldc "{result}"\n')
         lines.append("invokevirtual java/io/PrintStream/println(I)V\n")
     elif(type(result) == float):
-        lines.append(
-            f"fload {list(global_variables.values()).index(result)}\n")
+        try:
+            lines.append(f"fload {list(global_variables.values()).index(result)}\n")
+        except ValueError:
+            lines.append(f'ldc "{result}"\n')
         lines.append("invokevirtual java/io/PrintStream/println(F)V\n")
     elif(type(result) == str):
         try:
-            lines.append(
-                f'aload {list(global_variables.values()).index(result)}\n')
+            lines.append(f'aload {list(global_variables.values()).index(result)}\n')
         except ValueError:
             lines.append(f'ldc "{result}"\n')
         lines.append(
@@ -117,26 +121,28 @@ def jasmin_print(result):
 
 
 def jasmin_var_operations(left, right, l, r):
-    aux = list(global_variables)
+    var_list = list(global_variables)
+    left_key = left.getText()
+    right_key = right.getText()
 
     if(str(type(left)).find('Id') != -1 and str(type(right)).find('Id') != -1):
         if(type(l) == int and type(r) == int):
-            lines.append(f"iload {aux.index(left.getText())}\n")
-            lines.append(f"iload {aux.index(right.getText())}\n")
+            lines.append(f"iload {var_list.index(left_key)}\n")
+            lines.append(f"iload {var_list.index(right_key)}\n")
         elif(type(l) == float and type(r) == float):
-            lines.append(f"fload {aux.index(left.getText())}\n")
-            lines.append(f"fload {aux.index(right.getText())}\n")
+            lines.append(f"fload {var_list.index(left_key)}\n")
+            lines.append(f"fload {var_list.index(right_key)}\n")
     elif(str(type(left)).find('Id') != -1):
         if(type(l) == int):
-            lines.append(f"iload {aux.index(left.getText())}\n")
+            lines.append(f"iload {var_list.index(left_key)}\n")
         elif(type(l) == float):
-            lines.append(f"fload {aux.index(left.getText())}\n")
+            lines.append(f"fload {var_list.index(left_key)}\n")
         lines.append(f"ldc {r}\n")
     elif(str(type(right)).find('Id') != -1):
         if(type(r) == int):
-            lines.append(f"iload {aux.index(right.getText())}\n")
+            lines.append(f"iload {var_list.index(right_key)}\n")
         elif(type(r) == float):
-            lines.append(f"fload {aux.index(right.getText())}\n")
+            lines.append(f"fload {var_list.index(right_key)}\n")
         lines.append(f"ldc {l}\n")
     else:
         lines.append(f"ldc {l}\n")
@@ -162,35 +168,71 @@ def jasmin_logic_operations(op, l, r):
     global label
 
     if(op == '>'):
-        if(type(l) == int and type(r) == int):
-            lines.append(f"if_icmpgt L{label}\n")
-        elif(type(l) == float and type(r) == float):
-            lines.append(f"fcmpl\nifgt L{label}\n")
+        if(flags['enter_while'] != -1):
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpgt L{flags['enter_while']}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifgt L{flags['enter_while']}\n")
+        else:
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpgt L{label}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifgt L{label}\n")
     elif(op == '>='):
-        if(type(l) == int and type(r) == int):
-            lines.append(f"if_icmpge L{label}\n")
-        elif(type(l) == float and type(r) == float):
-            lines.append(f"fcmpl\nifge L{label}\n")
+        if(flags['enter_while'] != -1):
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpge L{flags['enter_while']}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifge L{flags['enter_while']}\n")
+        else:
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpge L{label}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifge L{label}\n")
     elif(op == '<'):
-        if(type(l) == int and type(r) == int):
-            lines.append(f"if_icmplt L{label}\n")
-        elif(type(l) == float and type(r) == float):
-            lines.append(f"fcmpl\niflt L{label}\n")
+        if(flags['enter_while'] != -1 and flags['read_if'] == 0):
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmplt L{flags['enter_while']}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\niflt L{flags['enter_while']}\n")
+        else:
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmplt L{label}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\niflt L{label}\n")
     elif(op == '<='):
-        if(type(l) == int and type(r) == int):
-            lines.append(f"if_icmple L{label}\n")
-        elif(type(l) == float and type(r) == float):
-            lines.append(f"fcmpl\nifle L{label}\n")
+        if(flags['enter_while'] != -1 and flags['read_if'] == 0):
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmple L{flags['enter_while']}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifle L{flags['enter_while']}\n")
+        else:
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmple L{label}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifle L{label}\n")
     elif(op == '=='):
-        if(type(l) == int and type(r) == int):
-            lines.append(f"if_icmpeq L{label}\n")
-        elif(type(l) == float and type(r) == float):
-            lines.append(f"fcmpl\nifeq L{label}\n")
+        if(flags['enter_while'] != -1 and flags['read_if'] == 0):
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpeq L{flags['enter_while']}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifeq L{flags['enter_while']}\n")
+        else:
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpeq L{label}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifeq L{label}\n")
     elif(op == '!='):
-        if(type(l) == int and type(r) == int):
-            lines.append(f"if_icmpne L{label}\n")
-        elif(type(l) == float and type(r) == float):
-            lines.append(f"fcmpl\nifne L{label}\n")
+        if(flags['enter_while'] != -1 and flags['read_if'] == 0):
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpne L{flags['enter_while']}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifne L{flags['enter_while']}\n")
+        else:
+            if(type(l) == int and type(r) == int):
+                lines.append(f"if_icmpne L{label}\n")
+            elif(type(l) == float and type(r) == float):
+                lines.append(f"fcmpl\nifne L{label}\n")
 
     label += 1
     # elif(op == 'and'):
@@ -210,7 +252,7 @@ def jasmin_if_command(evaluated, stmt):
     if(stmt == None):
         lines.append(f"goto L{aux}\n")
     else:
-        lines.append(f"goto ELSE{label}\n")
+        lines.append(f"goto ELSE{label-1}\n")
 
     if(evaluated):
         lines.append(f"L{label-1}:\n")
@@ -218,9 +260,7 @@ def jasmin_if_command(evaluated, stmt):
     if(not evaluated and stmt == None):
         lines.append(f"L{label-1}:\n")
     elif(evaluated and stmt != None):
-        lines.append(f"ELSE{label}:\n")
-    # elif(not evaluated and stmt != None):
-    #     lines.append(f"L{label-1}:\nELSE{label}:\n")
+        lines.append(f"ELSE{label-1}:\n")
 
 
 def jasmin_for_command(var, range_values):
@@ -236,6 +276,99 @@ def jasmin_for_command(var, range_values):
         lines.append(f"ldc {range_values[1]}\n")
 
     jasmin_logic_operations('>=', global_variables.get(var), range_values[1])
+
+
+def jasmin_break():
+    lines.append("return\n")
+
+
+def jasmin_input_command(ctx, var=None):
+    if(ctx == 2):
+        var_list = list(global_variables)
+
+        lines.append(f"invokestatic TrabalhoFinal.read()I\n")
+        lines.append(f"istore {var_list.index(var)}\n")
+    elif(ctx == 1):
+        lines.append(""".method public static read()I
+
+        .limit stack 5   ; up to five items can be pushed
+        .limit locals 100
+
+        ; the input function starts at this point
+            ldc 0
+            istore 50     ; storage for a dummy integer for reading it by input()
+            ldc 0
+            istore 49     ; preparacao para negativo
+        Label1:
+            getstatic java/lang/System/in Ljava/io/InputStream;
+            invokevirtual java/io/InputStream/read()I
+            istore 51
+            iload 51
+            ldc 10 ; uso no mac (valor ASCII da tecla ENTER)
+        ;    ldc 13 ; uso no windows (valor ASCII da tecla ENTER)
+            isub
+            ifeq Label2
+            iload 51
+            ldc 32 ; space 
+            isub
+            ifeq Label2
+            iload 51
+            ldc 43 ; plus sign
+            isub
+            ifeq Label1
+            iload 51
+            ldc 45 ; minus sign
+            isub
+            ifeq Label3
+            iload 51
+            ldc 48
+            isub
+            ldc 10
+            iload 50
+            imul
+            iadd
+            istore 50
+            goto Label1
+
+        Label3:
+            ldc 1
+            istore 49
+            goto Label1
+            
+        Label2:     ; now our dummy integer contains the integer read from the keyboard
+            ldc 1
+            iload 49
+            isub
+            ifeq Label4
+            iload 50       ; input function ends here
+            ireturn
+        Label4:
+            ldc 0
+            iload 50
+            isub
+            ireturn
+        .end method""")
+    
+
+def jasmin_func(func_name):
+    func_type = global_variables.get(func_name)
+    var_list = list(global_variables)
+
+    op = {
+        'int': lambda: 'I',
+        'float': lambda: 'F',
+        'string': lambda: 'Ljava/lang/String;',
+        'void': lambda: 'V',
+    }
+    result = op.get(func_type, lambda: None)()
+
+    lines.append(f"invokestatic TrabalhoFinal.{func_name}(){result}\n")
+    if(func_type == 'int'):
+        lines.append(f"istore {var_list.index(func_name)}\n")
+    elif(func_type == 'float'):
+        lines.append(f"fstore {var_list.index(func_name)}\n")
+    elif(func_type == 'string'):
+        lines.append(f"astore {var_list.index(func_name)}\n")
 
 
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
@@ -265,17 +398,42 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         flags[ctx.func_name.text] = []
         parse_var(ctx.func_type.getText(), ctx.func_name.text)
 
+        op = {
+            'int': lambda: 'I',
+            'float': lambda: 'F',
+            'string': lambda: 'Ljava/lang/String;',
+            'void': lambda: 'V',
+        }
+        result = op.get(ctx.func_type.getText(), lambda: None)()
+
+        lines.append(f".method public static {ctx.func_name.text}(){result}\n.limit stack 50\n.limit locals 10\n")
+
         for parameter in ctx.parameter_list():
             parse_var(parameter.t_type().getText(), parameter.ID().getText())
             flags[ctx.func_name.text].append(parameter.ID().getText())
 
+        flags['enter_func'] = 1
+        for stats in ctx.stats():
+            self.visit(stats)
+        flags['enter_func'] = 0
+        flags['exit_func'] = 1
+
         return ctx.stats()
 
     def visitMain_block(self, ctx):
+        input_command = 0
         for stats in ctx.stats():
+            if(stats.input_command()):
+                input_command = 1
             self.visit(stats)
+        func_names = list(global_funct)
+        for func in func_names:
+            jasmin_func(func)
 
-        lines.append("Fim:\nreturn\n.end method")
+        lines.append("Fim:\nreturn\n.end method\n\n")
+        if(input_command == 1):
+            jasmin_input_command(1)
+
         with open('jasmin/TrabalhoFinal.j', 'w+') as writer:
             writer.writelines(lines)
             writer.close()
@@ -290,8 +448,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         control = 0
         if(flags['for'] == 0 and flags['while'] == 0):
-            if(str(type(ctx.op)).find('Number') != -1 or str(type(ctx.op)).find('String') != -1):
-                lines.append(f"ldc ")
+            if(str(type(ctx.op)).find('Number') != -1 or str(type(ctx.op)).find('String') != -1) or str(type(ctx.op)).find('Infix') != -1:
                 control = 1
 
         result = self.visit(ctx.op)
@@ -316,17 +473,19 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         if(flags['for'] == 0 and flags['while'] == 0):
             if(control == 1):
                 if(type(result) == int):
-                    lines.append(f"{result}\nistore {var_list.index(var)}\n")
+                    lines.append(f"istore {var_list.index(var)}\n")
                 elif(type(result) == float):
-                    lines.append(f"{result}\nfstore {var_list.index(var)}\n")
+                    lines.append(f"fstore {var_list.index(var)}\n")
                 elif(type(result) == str):
-                    lines.append(f'"{result}"\nastore {var_list.index(var)}\n')
+                    lines.append(
+                        f'"ldc {result}"\nastore {var_list.index(var)}\n')
 
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
         condition = ctx.condition_block()
         evaluated_block = False
 
         if(str(type(condition.op)).find('Logic') != -1):
+            flags['read_if'] = 1
             evaluated = self.visit(condition.op)
             if(flags['for'] == 0 and flags['while'] == 0):
                 jasmin_if_command(evaluated, ctx.stmt)
@@ -336,10 +495,18 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 self.visit(condition.stmt)
 
             if(flags['read'] == 0):
-                #lines.append(f"L{label-1}:\n")
+                lines.append(f"L{label-1}:\n")
                 self.visit(condition.stmt)
                 if(ctx.stmt != None):
-                    lines.append(f"ELSE{label}:\n")
+                    lines.append(f"ELSE{label-1}:\n")
+                flags['read'] = 1
+            else:
+                flags['read'] = 0
+                if(flags['exit_while'] == 0):
+                    lines.append(f"L{label-1}:\n")
+                    self.visit(condition.stmt)
+                    if(ctx.stmt != None):
+                        lines.append(f"goto L{label}\nELSE{label-1}:\n")
                 flags['read'] = 1
 
             if(not evaluated_block and ctx.stmt != None):
@@ -347,6 +514,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
             if(flags['for'] == 0 and flags['while'] == 0):
                 lines.append(f"L{label}:\n")
+
+            flags['read_if'] = 0
             return evaluated
         else:
             raise OperationError(
@@ -373,52 +542,22 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
             if(flags['break'] == 1):
                 flags['break'] = 0
+                lines.append("return\n")
                 flags['for'] = 0
                 break
+
         flags['for'] = 0
-
-        """
-        Lforj:	
-        iload 3
-        iload 1	
-        if_icmpgt Eforj ; se j > M
-
-        ldc 1
-        iload 2 
-        if_icmpeq L5 ; if(i == 1)
-
-        ldc 1
-        iload 3
-        if_icmpeq L5 ; if(j == 1)
-
-        ldc 0
-        iload 3 ;
-        if_icmpne Else ; if(j != 1)
-
-
-        L5:
-        getstatic java/lang/System/out Ljava/io/PrintStream;
-        ldc "1 " 
-        invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
-        goto L
-
-        Else:
-        getstatic java/lang/System/out Ljava/io/PrintStream;
-        ldc "0 "
-        invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
-        goto L
-
-        L:
-        iinc 3 1
-        goto Lforj
-        """
 
     def visitRangeCommand(self, ctx: TrabalhoFinalG3Parser.RangeCommandContext):
         aux = []
         range_values = []
 
-        for x in ctx.NUMBER():
-            aux.append(parse_id(x.getText()))
+        if(ctx.ID()):
+            for x in ctx.ID():
+                aux.append(global_variables.get(x.getText()))
+        else:
+            for x in ctx.NUMBER():
+                aux.append(parse_id(x.getText()))
 
         if(len(aux) == 1):
             range_values.append(0)
@@ -437,7 +576,12 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
     def visitWhileCommand(self, ctx: TrabalhoFinalG3Parser.WhileCommandContext):
         if(str(type(ctx.op)).find('Logic') != -1):
+
             op = self.visit(ctx.op)
+
+            flags['read'] = 1
+            lines.append(f"L{label-1}:\n")
+            flags['enter_while'] = label-1
 
             while(op):
                 self.visit(ctx.stmt)
@@ -446,6 +590,11 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 if(flags['break'] == 1):
                     flags['break'] = 0
                     break
+
+                if(flags['while'] == 0):
+                    flags['while'] = 1
+                    flags['exit_while'] = 1
+
         else:
             raise OperationError(
                 f"Operacao '{ctx.op.getText()}' invalida para um condicional")
@@ -464,13 +613,13 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     print(result1, result2)
                 else:
                     result2 = self.visit(ctx.op2)
-                    if(flags['read'] == 1 or (flags['for'] == 0 and flags['while'] == 0)):
+                    if(flags['read'] == 1):
                         print(result1, result2)
                     if(flags['for'] == 0 and flags['while'] == 0):
                         jasmin_print(result1)
                         jasmin_print(result2)
             else:
-                if(flags['read'] == 1 or (flags['for'] == 0 and flags['while'] == 0)):
+                if(flags['read_print'] == 0 and flags['read'] == 1):
                     print(result1)
                 if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_print(result1)
@@ -486,12 +635,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     result2 = self.visit(ctx.op2)
                     if(flags['read'] == 1):
                         print(result1, result2)
-                        print(f"1-Read: {flags['read']} || Read-print: {flags['read_print']}")
                     if(flags['for'] == 0 and flags['while'] == 0):
-                        print(f"2-Read: {flags['read']} || Read-print: {flags['read_print']} || For: {flags['for']}")
-                        if(flags['read_print'] == 0 and flags['for'] == 0):
-                            print(result1, result2)
-                            flags['read_print'] = 1
                         jasmin_print(result1)
                         jasmin_print(result2)
             else:
@@ -503,6 +647,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitInputCommand(self, ctx: TrabalhoFinalG3Parser.InputCommandContext):
         var = ctx.var.text
         parse = input()
+
+        jasmin_input_command(2, var)
 
         result = parse_id(parse)
         update_var(var, result)
@@ -548,7 +694,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         if((type(l) != str and type(r) != str) and (type(l) != bool and type(r) != bool)):
             if(flags['for'] == 0 and flags['while'] == 0):
                 jasmin_var_operations(ctx.left, ctx.right, l, r)
-            
+
             if(op == '+'):
                 if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_infix_operations(op, l, r)
@@ -628,6 +774,8 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         parameters = flags[func_name]
         count = 0
+
+        jasmin_func(func_name)
 
         if(ctx.expr_list()):
             for expr in ctx.expr_list().expr():

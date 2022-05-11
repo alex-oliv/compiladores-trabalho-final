@@ -9,15 +9,15 @@
 [ x ] - Attribution ({int}, {float}, {string});
 [ x ] - IF / ELSE;
 [ x ] - FOR;
-[] - WHILE;
+[ x ] - WHILE;
 [ x ] - PRINT ({int}, {float}, {string});
-[] - INPUT;
+[ x ] - INPUT;
 [] - BREAK;
 [] - FUNC_RETURN;
 [] - Expr:
   ().FuncExp;
   ().Not;
-  (x).Unary;
+  ().Unary;
   (x).Infix;
   (x).Logic;
   ().Paren;
