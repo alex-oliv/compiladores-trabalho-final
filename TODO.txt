@@ -3,14 +3,14 @@
 [] - Terminar a parte de geração de código;
 
 
-[] - Var declaration / Type = ({int}, {float}, {string}, boolean);
+[ x ] - Var declaration / Type = ({int}, {float}, {string});
 [] - Func declaration;
 [ x ] - Main block; 
-[] - Attribution ({int}, {float}, {string}, boolean);
-[] - IF / ELSE;
+[ x ] - Attribution ({int}, {float}, {string});
+[ x ] - IF / ELSE;
 [] - FOR;
 [] - WHILE;
-[] - PRINT ({int}, {float}, {string}, boolean);
+[ x ] - PRINT ({int}, {float}, {string});
 [] - INPUT;
 [] - BREAK;
 [] - FUNC_RETURN;

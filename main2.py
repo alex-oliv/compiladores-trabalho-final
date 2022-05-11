@@ -1,16 +1,24 @@
-var = {'x': 2, 'y': 105.5, 'z': 'ANTLR'}
+var = {'x': 'int', 'y': 5, 'z': 'ANTLR'}
+
+
+
+x = 'int'
+y = 5
+
+x = y
+
+x = 5
 
 aux = list(var)
-value = var.get('z')
-
-print(var.get('a'))
-
-result = 'ANTL'
-try:
-    re = list(var.values()).index(result)
-    print(f"Re: {re}")
-except ValueError:
-    print("EH uma string")
+value = var.get('y')
 
 
+print(aux)
+print(value)
+
+if(value == 'int' or value == 'float' or value == 'string'):
+    print("SO DECLARADO")
+else:
+    print("NOPE")
+    print
 

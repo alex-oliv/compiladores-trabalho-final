@@ -1,9 +1,7 @@
-int x;
-int y = 5;
+int x=0;
 
 main():
-  x = y;
-  print "1-Valor x =", x;
-  x = -x;
-  print "2-Valor x =", x;
+  for x in range(5):
+    print "Valor x =", x;
+  }
 }

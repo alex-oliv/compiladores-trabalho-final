@@ -28,3 +28,71 @@ main():
   x = -10;
   print "2-Valor x =", x;
 }
+
+---
+int x = 10;
+
+main():
+  if x < 0:
+    print "X eh positivo!";
+  }
+  print "CASO 1: DEPOIS DO IF / ELSE";
+}
+---
+int x = 10;
+
+main():
+  if x >= 0:
+    print "X eh positivo!";
+  }
+  print "CASO 2: DEPOIS DO IF / ELSE";
+}
+---
+int x = 10;
+
+main():
+  if x < 0:
+    print "X eh positivo!";
+  } else:
+    print "CASO 3: ELSE VERDADEIRO";
+  }
+}
+---
+int x = 10;
+
+main():
+  if x < 0:
+    print "CASO 4: X eh positivo!";
+  } else:
+    print "ELSE FALSO";
+  }
+}
+---
+int x = 10;
+
+main():
+  if x < 0:
+    print "X eh positivo!";
+  } else:
+    print "ELSE VERDADEIRO";
+  }
+  print "CASO 5: DEPOIS DO IF / ELSE";
+}
+---
+int x = 10;
+
+main():
+  if x > 0:
+    print "X eh positivo!";
+  } else:
+    print "ELSE FALSO";
+  }
+  print "CASO 6: DEPOIS DO IF / ELSE";
+}
+
+if - Falso e resto;
+if - verdadeiro e resto;
+if - falso e else - verdadeiro;
+if - verdadeiro e else - falso;
+if - falso e else - verdadeiro e resto;
+if - verdadeiro e else - falso e resto;
