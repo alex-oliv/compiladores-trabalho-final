@@ -6,52 +6,21 @@
 ldc 0
 istore 0
 Lforx:
-if_icmpgt L0
+iload 0
+ldc 5
+if_icmpge L0
 getstatic java/lang/System/out Ljava/io/PrintStream;
 ldc "Valor x ="
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 getstatic java/lang/System/out Ljava/io/PrintStream;
 iload 0
 invokevirtual java/io/PrintStream/println(I)V
-goto Lforx_inc:
+goto Lforx_inc
 Lforx_inc:
 iinc 0 1
-getstatic java/lang/System/out Ljava/io/PrintStream;
-ldc "Valor x ="
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-getstatic java/lang/System/out Ljava/io/PrintStream;
-iload 0
-invokevirtual java/io/PrintStream/println(I)V
-goto Lforx_inc:
-Lforx_inc:
-iinc 0 1
-getstatic java/lang/System/out Ljava/io/PrintStream;
-ldc "Valor x ="
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-getstatic java/lang/System/out Ljava/io/PrintStream;
-iload 0
-invokevirtual java/io/PrintStream/println(I)V
-goto Lforx_inc:
-Lforx_inc:
-iinc 0 1
-getstatic java/lang/System/out Ljava/io/PrintStream;
-ldc "Valor x ="
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-getstatic java/lang/System/out Ljava/io/PrintStream;
-iload 0
-invokevirtual java/io/PrintStream/println(I)V
-goto Lforx_inc:
-Lforx_inc:
-iinc 0 1
-getstatic java/lang/System/out Ljava/io/PrintStream;
-ldc "Valor x ="
-invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-getstatic java/lang/System/out Ljava/io/PrintStream;
-iload 0
-invokevirtual java/io/PrintStream/println(I)V
-goto Lforx_inc:
-Lforx_inc:
-iinc 0 1
+goto Lforx
+L0:
+return
 Fim:
 return
 .end method

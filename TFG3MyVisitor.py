@@ -8,7 +8,7 @@ from dist.TrabalhoFinalG3Visitor import TrabalhoFinalG3Visitor
 
 global_variables = {}
 global_funct = {}
-flags = {'break': 0}
+flags = {'break': 0, 'for': 0, 'while': 0}
 lines = []
 label = 0
 
@@ -205,6 +205,39 @@ def jasmin_logic_operations(op, l, r):
     #         lines.append(f"fcmpl\nifgt L{label}\n")
 
 
+def jasmin_if_command(evaluated, stmt):
+    aux = label
+    if(stmt == None):
+        lines.append(f"goto L{aux}\n")
+    else:
+        lines.append(f"goto ELSE{label}\n")
+
+    if(evaluated):
+        lines.append(f"L{label-1}:\n")
+
+    if(not evaluated and stmt == None):
+        lines.append(f"L{label-1}:\n")
+    elif(evaluated and stmt != None):
+        lines.append(f"ELSE{label}:\n")
+    elif(not evaluated and stmt != None):
+        lines.append(f"L{label-1}:\nELSE{label}:\n")
+
+
+def jasmin_for_command(var, range_values):
+    var_list = list(global_variables)
+    i = global_variables.get(var)
+
+    lines.append(f"Lfor{var}:\n")
+    if(type(i) == int and type(range_values[1]) == int):
+        lines.append(f"iload {var_list.index(var)}\n")
+        lines.append(f"ldc {range_values[1]}\n")
+    elif(type(i) == float and type(range_values[1]) == float):
+        lines.append(f"iload {var_list.index(var)}\n")
+        lines.append(f"ldc {range_values[1]}\n")
+
+    jasmin_logic_operations('>=', global_variables.get(var), range_values[1])
+
+
 class TFG3MyVisitor(TrabalhoFinalG3Visitor):
     def visitProg(self, ctx):
         lines.append(".class TrabalhoFinal\n.super java/lang/Object\n")
@@ -256,35 +289,38 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 raise TypeError("Erro - Funcao declarada do tipo sem retorno.")
 
         control = 0
-        if(str(type(ctx.op)).find('Number') != -1 or str(type(ctx.op)).find('String') != -1):
-            lines.append(f"ldc ")
-            control = 1
+        if(flags['for'] == 0 and flags['while'] == 0):
+            if(str(type(ctx.op)).find('Number') != -1 or str(type(ctx.op)).find('String') != -1):
+                lines.append(f"ldc ")
+                control = 1
 
         result = self.visit(ctx.op)
 
         var_list = list(global_variables)
         values_list = list(global_variables.values())
 
-        if(control == 0):
-            if(type(result) == int):
-                lines.append(
-                    f"iload {values_list.index(result)}\nistore {var_list.index(var)}\n")
-            elif(type(result) == float):
-                lines.append(
-                    f"fload {values_list.index(result)}\nfstore {var_list.index(var)}\n")
-            elif(type(result) == str):
-                lines.append(
-                    f"aload {values_list.index(result)}\nastore {var_list.index(var)}\n")
+        if(flags['for'] == 0 and flags['while'] == 0):
+            if(control == 0):
+                if(type(result) == int):
+                    lines.append(
+                        f"iload {values_list.index(result)}\nistore {var_list.index(var)}\n")
+                elif(type(result) == float):
+                    lines.append(
+                        f"fload {values_list.index(result)}\nfstore {var_list.index(var)}\n")
+                elif(type(result) == str):
+                    lines.append(
+                        f"aload {values_list.index(result)}\nastore {var_list.index(var)}\n")
 
         update_var(var, result)
 
-        if(control == 1):
-            if(type(result) == int):
-                lines.append(f"{result}\nistore {var_list.index(var)}\n")
-            elif(type(result) == float):
-                lines.append(f"{result}\nfstore {var_list.index(var)}\n")
-            elif(type(result) == str):
-                lines.append(f'"{result}"\nastore {var_list.index(var)}\n')
+        if(flags['for'] == 0 and flags['while'] == 0):
+            if(control == 1):
+                if(type(result) == int):
+                    lines.append(f"{result}\nistore {var_list.index(var)}\n")
+                elif(type(result) == float):
+                    lines.append(f"{result}\nfstore {var_list.index(var)}\n")
+                elif(type(result) == str):
+                    lines.append(f'"{result}"\nastore {var_list.index(var)}\n')
 
     def visitIfCommand(self, ctx: TrabalhoFinalG3Parser.IfCommandContext):
         condition = ctx.condition_block()
@@ -292,27 +328,18 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         if(str(type(condition.op)).find('Logic') != -1):
             evaluated = self.visit(condition.op)
-
-            aux = label
-            if(ctx.stmt == None):
-                lines.append(f"goto L{aux}\n")
-            else:
-                lines.append(f"goto ELSE{label}\n")
+            if(flags['for'] == 0 and flags['while'] == 0):
+                jasmin_if_command(evaluated, ctx.stmt)
 
             if(evaluated):
                 evaluated_block = True
-                lines.append(f"L{label-1}:\n")
                 self.visit(condition.stmt)
 
-            if(not evaluated_block and ctx.stmt == None):
-                lines.append(f"L{label-1}:\n")
-            elif(evaluated_block and ctx.stmt != None):
-                lines.append(f"ELSE{label}:\n")
-            elif(not evaluated_block and ctx.stmt != None):
-                lines.append(f"L{label-1}:\nELSE{label}:\n")
+            if(not evaluated_block and ctx.stmt != None):
                 self.visit(ctx.stmt)
 
-            lines.append(f"L{aux}:\n")
+            if(flags['for'] == 0 and flags['while'] == 0):
+                lines.append(f"L{label}:\n")
             return evaluated
         else:
             raise OperationError(
@@ -322,23 +349,26 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         range_values = self.visit(ctx.rang)
         var = ctx.var.text
         var_list = list(global_variables)
-        control = 1
 
-        lines.append(f"Lfor{var}:\n")
-        jasmin_logic_operations(
-            '>', global_variables.get(var), range_values[1])
+        jasmin_for_command(var, range_values)
+        aux = label-1
 
         for i in range(range_values[0], range_values[1], range_values[2]):
             update_var(var, i)
             self.visit(ctx.stmt)
 
-            if(control == 1):
+            if(flags['for'] == 0):
+                lines.append(f"goto Lfor{var}_inc\nLfor{var}_inc:\n")
                 lines.append(
-                    f"goto Lfor{var}_inc:\nLfor{var}_inc:\niinc {var_list.index(var)} {range_values[2]}\n")
+                    f"iinc {var_list.index(var)} {range_values[2]}\ngoto Lfor{var}\n")
+                lines.append(f"L{aux}:\nreturn\n")
+                flags['for'] = 1
 
             if(flags['break'] == 1):
                 flags['break'] = 0
+                flags['for'] = 0
                 break
+        flags['for'] = 0
 
         """
         Lforj:	
@@ -428,11 +458,13 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 else:
                     result2 = self.visit(ctx.op2)
                     print(result1, result2)
-                    jasmin_print(result1)
-                    jasmin_print(result2)
+                    if(flags['for'] == 0 and flags['while'] == 0):
+                        jasmin_print(result1)
+                        jasmin_print(result2)
             else:
                 print(result1)
-                jasmin_print(result1)
+                if(flags['for'] == 0 and flags['while'] == 0):
+                    jasmin_print(result1)
         else:
             result1 = self.visit(ctx.op1)
             if(ctx.op2):
@@ -444,11 +476,13 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 else:
                     result2 = self.visit(ctx.op2)
                     print(result1, result2)
-                    jasmin_print(result1)
-                    jasmin_print(result2)
+                    if(flags['for'] == 0 and flags['while'] == 0):
+                        jasmin_print(result1)
+                        jasmin_print(result2)
             else:
                 print(result1)
-                jasmin_print(result1)
+                if(flags['for'] == 0 and flags['while'] == 0):
+                    jasmin_print(result1)
 
     def visitInputCommand(self, ctx: TrabalhoFinalG3Parser.InputCommandContext):
         var = ctx.var.text
@@ -496,19 +530,20 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
         op = ctx.op.text
 
         if((type(l) != str and type(r) != str) and (type(l) != bool and type(r) != bool)):
-            jasmin_var_operations(ctx.left, ctx.right, l, r)
-            if(op == '+'):
-                jasmin_infix_operations(op, l, r)
-                return l + r
-            elif(op == '-'):
-                jasmin_infix_operations(op, l, r)
-                return l - r
-            elif(op == '*'):
-                jasmin_infix_operations(op, l, r)
-                return l * r
-            elif(op == '/'):
-                jasmin_infix_operations(op, l, r)
-                return l / r
+            if(flags['for'] == 0 and flags['while'] == 0):
+                jasmin_var_operations(ctx.left, ctx.right, l, r)
+                if(op == '+'):
+                    jasmin_infix_operations(op, l, r)
+                    return l + r
+                elif(op == '-'):
+                    jasmin_infix_operations(op, l, r)
+                    return l - r
+                elif(op == '*'):
+                    jasmin_infix_operations(op, l, r)
+                    return l * r
+                elif(op == '/'):
+                    jasmin_infix_operations(op, l, r)
+                    return l / r
         elif(type(l) == str and type(r) == str and op == '+'):
             return l + r
         else:
@@ -532,8 +567,9 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
 
         op = ctx.op.text
 
-        jasmin_var_operations(ctx.left, ctx.right, l, r)
-        jasmin_logic_operations(op, l, r)
+        if(flags['for'] == 0 and flags['while'] == 0):
+            jasmin_var_operations(ctx.left, ctx.right, l, r)
+            jasmin_logic_operations(op, l, r)
 
         left_operation_type = str(type(l)).split()[1].replace('>', '')
         rigth_operation_type = str(type(r)).split()[1].replace('>', '')
