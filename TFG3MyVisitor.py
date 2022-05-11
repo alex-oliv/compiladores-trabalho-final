@@ -8,7 +8,7 @@ from dist.TrabalhoFinalG3Visitor import TrabalhoFinalG3Visitor
 
 global_variables = {}
 global_funct = {}
-flags = {'break': 0, 'for': 0, 'while': 0}
+flags = {'break': 0, 'for': 0, 'while': 0, 'read': 0}
 lines = []
 label = 0
 
@@ -219,8 +219,8 @@ def jasmin_if_command(evaluated, stmt):
         lines.append(f"L{label-1}:\n")
     elif(evaluated and stmt != None):
         lines.append(f"ELSE{label}:\n")
-    elif(not evaluated and stmt != None):
-        lines.append(f"L{label-1}:\nELSE{label}:\n")
+    # elif(not evaluated and stmt != None):
+    #     lines.append(f"L{label-1}:\nELSE{label}:\n")
 
 
 def jasmin_for_command(var, range_values):
@@ -335,6 +335,13 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                 evaluated_block = True
                 self.visit(condition.stmt)
 
+            if(flags['read'] == 0):
+                lines.append(f"L{label-1}:\n")
+                self.visit(condition.stmt)
+                if(ctx.stmt != None):
+                    lines.append(f"ELSE{label}:\n")
+                flags['read'] = 1
+
             if(not evaluated_block and ctx.stmt != None):
                 self.visit(ctx.stmt)
 
@@ -363,6 +370,7 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     f"iinc {var_list.index(var)} {range_values[2]}\ngoto Lfor{var}\n")
                 lines.append(f"L{aux}:\nreturn\n")
                 flags['for'] = 1
+                #flags['read'] = 1
 
             if(flags['break'] == 1):
                 flags['break'] = 0
@@ -457,12 +465,14 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     print(result1, result2)
                 else:
                     result2 = self.visit(ctx.op2)
-                    print(result1, result2)
+                    if(flags['read'] == 1):
+                        print(result1, result2)
                     if(flags['for'] == 0 and flags['while'] == 0):
                         jasmin_print(result1)
                         jasmin_print(result2)
             else:
-                print(result1)
+                if(flags['read'] == 1):
+                    print(result1)
                 if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_print(result1)
         else:
@@ -475,12 +485,14 @@ class TFG3MyVisitor(TrabalhoFinalG3Visitor):
                     print(result1, result2)
                 else:
                     result2 = self.visit(ctx.op2)
-                    print(result1, result2)
+                    if(flags['read'] == 1):
+                        print(result1, result2)
                     if(flags['for'] == 0 and flags['while'] == 0):
                         jasmin_print(result1)
                         jasmin_print(result2)
             else:
-                print(result1)
+                if(flags['read'] == 1):
+                    print(result1)
                 if(flags['for'] == 0 and flags['while'] == 0):
                     jasmin_print(result1)
 

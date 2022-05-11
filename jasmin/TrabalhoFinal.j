@@ -4,20 +4,41 @@
 .limit stack 50
 .limit locals 10
 ldc 0
-istore 0
+istore 1
+ldc 555
+istore 2
 Lforx:
-iload 0
-ldc 5
+iload 1
+ldc 3
 if_icmpge L0
+iload 1
+ldc 1
+if_icmpeq L1
+goto ELSE2
+L1:
 getstatic java/lang/System/out Ljava/io/PrintStream;
-ldc "Valor x ="
+ldc "Valor if(x) ="
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 getstatic java/lang/System/out Ljava/io/PrintStream;
-iload 0
+iload 1
+invokevirtual java/io/PrintStream/println(I)V
+ELSE2:
+getstatic java/lang/System/out Ljava/io/PrintStream;
+ldc "DIFERENTE DE 1"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+getstatic java/lang/System/out Ljava/io/PrintStream;
+ldc "ELSEZIN"
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+L2:
+getstatic java/lang/System/out Ljava/io/PrintStream;
+ldc "For x ="
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+getstatic java/lang/System/out Ljava/io/PrintStream;
+iload 1
 invokevirtual java/io/PrintStream/println(I)V
 goto Lforx_inc
 Lforx_inc:
-iinc 0 1
+iinc 1 1
 goto Lforx
 L0:
 return
